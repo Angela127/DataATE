@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Redirect directories
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.*)/$ $1 [L,R=301]
+
+# Handle requests
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# CHANGE THIS LINE: Pass the path as a query parameter named 'url'
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
