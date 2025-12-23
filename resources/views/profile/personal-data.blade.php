@@ -340,11 +340,35 @@
                         <div class="error-message">{{ $message }}</div>
                     @enderror
 
+                    <!-- IC/passport image -->
+                    <div class="field-card">
+                        <div class="field-info">
+                            <span class="field-label">Identity Card/Passport</span>
+                            <input type="file" name="identity_card_image" class="field-input" accept="image/*">
+                            @if(isset($customer->identity_card_image) && $customer->identity_card_image)
+                                    <div class="mt-2">
+                                        <span class="text-sm text-gray-600">Current file: </span>
+                                        <a href="{{ asset($customer->identity_card_image) }}" target="_blank" 
+                                        class="text-blue-600 hover:underline">View uploaded IC/Passport</a>
+                                    </div>
+                            @endif
+                        </div>
+                        <div class="field-edit">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    @error('identity_card_image')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+
                     <!-- Driving License -->
                     <div class="field-card">
                         <div class="field-info">
                             <span class="field-label">Driving License Number</span>
-                            <input type="text" name="license_no" class="field-input" value="{{ old('license_no', $customer->license_no ?? '') }}" placeholder="Enter driving license number">
+                            <input type="text" name="license_no" class="field-input" value="{{ old('license_no', $customer->license_no ?? '') }}" >
                         </div>
                         <div class="field-edit">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -354,6 +378,30 @@
                         </div>
                     </div>
                     @error('license_no')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+
+                    <!-- Driving License image -->
+                    <div class="field-card">
+                        <div class="field-info">
+                            <span class="field-label">Driving License Image</span>
+                            <input type="file" name="license_image" class="field-input" accept="image/*">
+                                @if(isset($customer->license_image) && $customer->license_image)
+                                    <div class="mt-2">
+                                        <span class="text-sm text-gray-600">Current file: </span>
+                                        <a href="{{ asset($customer->license_image) }}" target="_blank" 
+                                        class="text-blue-600 hover:underline">View uploaded license</a>
+                                    </div>
+                                @endif
+                        </div>
+                        <div class="field-edit">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    @error('license_image')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
 
@@ -375,6 +423,30 @@
                     @enderror
                 </div>
 
+                <!-- Student/Staff card -->
+                    <div class="field-card">
+                        <div class="field-info">
+                            <span class="field-label">Student/Staff Card</span>
+                            <input type="file" name="matric_staff_image" class="field-input" accept="image/*">
+                            @if(isset($customer->matric_staff_image) && $customer->matric_staff_image)
+                                    <div class="mt-2">
+                                        <span class="text-sm text-gray-600">Current file: </span>
+                                        <a href="{{ asset($customer->matric_staff_image) }}" target="_blank" 
+                                        class="text-blue-600 hover:underline">View uploaded IC/Passport</a>
+                                    </div>
+                            @endif
+                        </div>
+                        <div class="field-edit">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    @error('matric_staff_image')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                
                 <!-- Submit Section -->
                 <div class="submit-section">
                     <button type="submit" class="submit-btn">Submit</button>
