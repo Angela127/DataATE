@@ -85,6 +85,7 @@ class ProfileController extends Controller
      */
     public function updatePersonalData(Request $request): RedirectResponse
     {
+        
         $tab = $request->input('tab', 'personal');
 
         // Validate only fields for the current tab
@@ -111,6 +112,9 @@ class ProfileController extends Controller
                 'ic_passport' => ['nullable', 'string', 'max:255'],
                 'license_no' => ['nullable', 'string', 'max:255'],
                 'license_expiry' => ['nullable', 'date'],
+                'license_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,pdf', 'max:5120'],
+            'identity_card_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,pdf', 'max:5120'],
+                
             ],
             default => [],
         };
@@ -130,6 +134,76 @@ class ProfileController extends Controller
         $customer = $user->customer ?: new Customer([
             'user_id' => $user->id,
         ]);
+
+         // Handle license image upload
+        if ($request->hasFile('license_image')) {
+            // Delete old image if exists
+            if ($customer->license_image && file_exists(public_path($customer->license_image))) {
+                unlink(public_path($customer->license_image));
+            }
+
+            $file = $request->file('license_image');
+            $filename = 'license_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            
+            // Create directory if it doesn't exist
+            $directory = public_path('images/driving_licenses');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            
+            // Move file to public/images/driving_licenses
+            $file->move($directory, $filename);
+            
+            // Store relative path in database
+            $validated['license_image'] = 'images/driving_licenses/' . $filename;
+        }
+
+        // Handle identity card image upload
+        if ($request->hasFile('identity_card_image')) {
+            // Delete old image if exists
+            if ($customer->identity_card_image && file_exists(public_path($customer->identity_card_image))) {
+                unlink(public_path($customer->identity_card_image));
+            }
+
+            $file = $request->file('identity_card_image');
+            $filename = 'identity_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            
+            // Create directory if it doesn't exist
+            $directory = public_path('images/identity_cards');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            
+            // Move file to public/images/identity_cards
+            $file->move($directory, $filename);
+            
+            // Store relative path in database
+            $validated['identity_card_image'] = 'images/identity_cards/' . $filename;
+        }
+
+        // Handle student/staff card image upload
+        if ($request->hasFile('matric_staff_image')) {
+            // Delete old image if exists
+            if ($customer->matric_staff_image && file_exists(public_path($customer->matric_staff_image))) {
+                unlink(public_path($customer->matric_staff_image));
+            }
+
+            $file = $request->file('matric_staff_image');
+            $filename = 'matric_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            
+            // Create directory if it doesn't exist
+            $directory = public_path('images/matric_staff_cards');
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            
+            // Move file to public/images/matric_staff_cards
+            $file->move($directory, $filename);
+            
+            // Store relative path in database
+            $validated['matric_staff_image'] = 'images/matric_staff_cards/' . $filename;
+        }
+
 
         $customer->fill($validated);
         $customer->save();

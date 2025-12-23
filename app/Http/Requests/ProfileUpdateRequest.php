@@ -24,7 +24,11 @@ class ProfileUpdateRequest extends FormRequest
                 'email',
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
+                
             ],
+            'identity_card_image' => ['nullable|image|mimes:pdf,jpg,png|max:2048'],
+            'license_image' => ['nullable|image|mimes:pdf,jpg,png|max:2048'],
+            'matric_staff_image' => ['nullable|image|mimes:pdf,jpg,png|max:2048'],
         ];
     }
 }
