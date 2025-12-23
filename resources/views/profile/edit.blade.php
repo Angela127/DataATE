@@ -72,7 +72,7 @@
             </a>
 
             <!-- Order History -->
-            <a href="#order-history" class="menu-item">
+            <a href="{{ route('profile.order-history') }}" class="menu-item">
                 <div class="menu-item-left">
                     <div class="menu-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -84,24 +84,6 @@
                         </svg>
                     </div>
                     <span class="menu-label">Order History</span>
-                </div>
-                <div class="menu-arrow">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="9,18 15,12 9,6"></polyline>
-                    </svg>
-                </div>
-            </a>
-
-            <!-- Balance -->
-            <a href="#balance" class="menu-item">
-                <div class="menu-item-left">
-                    <div class="menu-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                            <line x1="1" y1="10" x2="23" y2="10"></line>
-                        </svg>
-                    </div>
-                    <span class="menu-label">Balance</span>
                 </div>
                 <div class="menu-arrow">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
