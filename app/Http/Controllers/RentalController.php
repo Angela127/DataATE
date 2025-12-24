@@ -187,11 +187,12 @@ class RentalController extends Controller
         $grandTotal = $depositAmount + $bookingPrice + (float) $request->query('addons', 0) - $discountAmount;
 
         $bookingDetails = [
+            'car' => $plate_no,
             'destination' => $request->query('destination', 'Student Mall'),
             'pickup_location' => $request->query('Pickup', 'Student Mall'),
             'return_location' => $request->query('Return', 'Student Mall'),
-            'start_time' => $start_time ?? now(),
-            'end_time' => $end_time ?? now()->addDays(3),
+            'start_time' => $start_time ? Carbon::parse($start_time)->format('Y-m-d H:i:s') : now()->format('Y-m-d H:i:s'),
+            'end_time' => $end_time ? Carbon::parse($end_time)->format('Y-m-d H:i:s') : now()->addDays(3)->format('Y-m-d H:i:s'),
             'booking_hours' => $bookingHours,
             'price' => $bookingPrice,
             'deposit' => $depositAmount,

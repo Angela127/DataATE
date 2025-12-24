@@ -106,6 +106,19 @@
 </div>
 
             <button class="edit-btn" onclick="editBooking()">Edit</button>
+            <script>
+                function editBooking() {
+                    const params = new URLSearchParams({
+                        car: '{{ $bookingDetails['car'] ?? request('car') }}',
+                        destination: '{{ $bookingDetails['destination'] }}',
+                        Pickup: '{{ $bookingDetails['pickup_location'] }}',
+                        Return: '{{ $bookingDetails['return_location'] }}',
+                        start_time: '{{ $bookingDetails['start_time'] }}',
+                        end_time: '{{ $bookingDetails['end_time'] }}'
+                    });
+                    window.location.href = "{{ route('booking.calendar') }}?" + params.toString();
+                }
+            </script>
         </section>
 
         <!-- Voucher Section -->
