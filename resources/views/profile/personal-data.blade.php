@@ -69,12 +69,22 @@
             @csrf
             @method('patch')
             
-            <!-- Tabs Navigation -->
-            <div class="tabs-container">
-            <button type="button" class="tab-item {{ $activeTab === 'personal' ? 'active' : '' }}" onclick="showTab('personal')">Personal Information</button>
-            <button type="button" class="tab-item {{ $activeTab === 'emergency' ? 'active' : '' }}" onclick="showTab('emergency')">Emergency Contact</button>
-            <button type="button" class="tab-item {{ $activeTab === 'documents' ? 'active' : '' }}" onclick="showTab('documents')">Documents</button>
-        </div>
+            <div class="personal-layout">
+                <!-- Left Sidebar Tabs -->
+                <div class="sidebar-tabs">
+                    <button type="button" class="side-tab {{ $activeTab === 'personal' ? 'active' : '' }}" onclick="showTab('personal')">
+                        Personal Information
+                    </button>
+                    <button type="button" class="side-tab {{ $activeTab === 'emergency' ? 'active' : '' }}" onclick="showTab('emergency')">
+                        Emergency Contact
+                    </button>
+                    <button type="button" class="side-tab {{ $activeTab === 'documents' ? 'active' : '' }}" onclick="showTab('documents')">
+                        Documents
+                    </button>
+                </div>
+
+                <!-- Right Content Area -->
+                <div class="content-area">
 
         <!-- Personal Information Tab -->
         <div id="personal-tab" class="tab-content {{ $activeTab === 'personal' ? 'active' : '' }}">
@@ -577,7 +587,7 @@
             });
             
             // Remove active class from all tab buttons
-            document.querySelectorAll('.tab-item').forEach(btn => {
+            document.querySelectorAll('.side-tab').forEach(btn => {
                 btn.classList.remove('active');
                 btn.classList.remove('semi-active');
             });
