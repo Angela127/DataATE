@@ -11,17 +11,17 @@
     <form method="POST" action="{{ route('login') }}" class="auth-form">
         @csrf
 
-        <!-- Email/Username -->
+        <!-- Email -->
         <div class="input-group">
             <input 
                 id="email" 
                 type="email" 
                 name="email" 
                 value="{{ old('email') }}" 
-                placeholder="Username" 
+                placeholder="Email" 
                 required 
                 autofocus 
-                autocomplete="username"
+                autocomplete="email"
             >
             @error('email')
                 <div class="input-error">{{ $message }}</div>
