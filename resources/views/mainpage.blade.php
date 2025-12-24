@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +28,7 @@
                 <li><a href="#" class="active">Home</a></li>
                 <li><a href="#car-rental">Car Rental</a></li>
                 @auth
-                    <li><a href="{{ route('dashboard') }}">Notification</a></li> <!--Remember to make one notification page-->
+                    <li><a href="{{ route('dashboard') }}">Notification</a></li>
                     <li><a href="{{ route('profile.edit') }}">Profile</a></li>
                 @endauth
             </ul>
@@ -96,11 +100,76 @@
     <section class="car-models" id="car-rental">
         <h2 class="section-title">Car Models</h2>
         <div class="cars-grid" id="carsGrid">
-            <!-- Cars will be loaded via JavaScript -->
+            @forelse ($cars as $car)
+                @php
+                    $modelLower = Str::lower($car->model);
+                    $imagePath = 'image/default-avatar.svg';
+
+                    if (Str::contains($modelLower, 'axia') && Str::contains($modelLower, '2014')) {
+                        $imagePath = 'image/car-axia-2014.png';
+                    } elseif (Str::contains($modelLower, 'axia') && Str::contains($modelLower, '2015')) {
+                        $imagePath = 'image/car-axia-2015.png';
+                    } elseif (Str::contains($modelLower, 'axia') && Str::contains($modelLower, '2016')) {
+                        $imagePath = 'image/car-axia-2016.png';
+                    } elseif (Str::contains($modelLower, 'axia') && Str::contains($modelLower, '2018')) {
+                        $imagePath = 'image/car-axia-2018.png';
+                    } elseif (Str::contains($modelLower, 'axia') && Str::contains($modelLower, '2024-1')) {
+                        $imagePath = 'image/car-axia-2024-1.png';
+                    } elseif (Str::contains($modelLower, 'axia') && Str::contains($modelLower, '2024-2')) {
+                        $imagePath = 'image/car-axia-2024-2.png';    
+                    } elseif (Str::contains($modelLower, 'myvi') && Str::contains($modelLower, '2013')) {
+                        $imagePath = 'image/car-myvi-2013.png';
+                    } elseif (Str::contains($modelLower, 'myvi') && Str::contains($modelLower, '2016')) {
+                        $imagePath = 'image/car-myvi-2016.png';
+                    } elseif (Str::contains($modelLower, 'bezza') && Str::contains($modelLower, '2013')) {
+                        $imagePath = 'image/car-bezza-2013.png';
+                    } elseif (Str::contains($modelLower, 'bezza') && Str::contains($modelLower, '2023-1')) {
+                        $imagePath = 'image/car-bezza-2023-1.png';
+                    } elseif (Str::contains($modelLower, 'bezza') && Str::contains($modelLower, '2023-2')) {
+                        $imagePath = 'image/car-bezza-2023-2.png';
+                    }elseif (Str::contains($modelLower, 'beat') && Str::contains($modelLower, '110')) {
+                        $imagePath = 'image/car-beat-110.png';
+                    }elseif (Str::contains($modelLower, 'dash') && Str::contains($modelLower, '125')) {
+                        $imagePath = 'image/car-dash-125.png';
+                    }
+
+                    $isAvailable = ($car->availability_status === 'Available');
+                @endphp
+
+                <div class="car-card {{ $isAvailable ? '' : 'unavailable' }}" data-car-name="{{ $car->model }}">
+                    <div class="car-image">
+                        <img src="{{ asset($imagePath) }}" alt="{{ $car->model }}" loading="lazy">
+                    </div>
+                    <div class="car-info">
+                        <h3 class="car-name">{{ $car->model }}</h3>
+
+                        <div class="car-actions">
+                            @if ($isAvailable)
+                                <button class="btn btn-rent" data-car-name="{{ $car->model }}">Rent</button>
+                                <button class="btn btn-details" data-car-name="{{ $car->model }}">Details</button>
+                            @else
+                                <button class="btn btn-unavailable" disabled>Not Available</button>
+                            @endif
+                        </div>
+
+                        <div class="car-details" style="display: none;">
+                            <p class="car-price">RM {{ number_format($car->price_hour, 2) }} / hour</p>
+                            <p class="car-status {{ $isAvailable ? 'status-available' : 'status-unavailable' }}">
+                                {{ $car->availability_status }}
+                            </p>
+                            <p class="car-meta">Mileage: {{ $car->car_mileage }} km</p>
+                            <p class="car-meta">Fuel: {{ $car->fuel_level }}%</p>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <p style="text-align:center; margin-top: 1rem;">
+                    No cars available at the moment.
+                </p>
+            @endforelse
         </div>
     </section>
 
     <script src="{{ asset('js/mainpage.js') }}"></script>
 </body>
 </html>
-

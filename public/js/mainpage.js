@@ -30,87 +30,6 @@ const heroCarouselData = [
     }
 ];
 
-// Car data for grid section
-const carsData = [
-    {
-        id: 1,
-        name: "Perodua Axia 2014",
-        image: "image/car-axia-2014.png",
-        available: true
-    },
-    {
-        id: 2,
-        name: "Perodua Axia 2015",
-        image: "image/car-axia-2015.png",
-        available: true
-    },
-    {
-        id: 3,
-        name: "Perodua Axia 2016",
-        image: "image/car-axia-2016.png",
-        available: true
-    },
-    {
-        id: 4,
-        name: "Perodua Axia 2018",
-        image: "image/car-axia-2018.png",
-        available: true
-    },
-    {
-        id: 5,
-        name: "Perodua Axia 2024",
-        image: "image/car-axia-2024-1.png",
-        available: true
-    },
-    {
-        id: 6,
-        name: "Perodua Axia 2024",
-        image: "image/car-axia-2024-2.png",
-        available: true
-    },
-    {
-        id: 7,
-        name: "Perodua Myvi 2013",
-        image: "image/car-myvi-2013.png",
-        available: true
-    },
-    {
-        id: 8,
-        name: "Perodua Myvi 2016",
-        image: "image/car-myvi-2016.png",
-        available: true
-    },
-    {
-        id: 9,
-        name: "Perodua Bezza 2013",
-        image: "image/car-bezza-2013.png",
-        available: true
-    },
-    {
-        id: 10,
-        name: "Perodua Bezza 2023",
-        image: "image/car-bezza-2023-1.png",
-        available: true
-    },
-    {
-        id: 11,
-        name: "Perodua Bezza 2023",
-        image: "image/car-bezza-2023-2.png",
-        available: false
-    },
-    {
-        id: 12,
-        name: "Honda Dash 125",
-        image: "image/car-dash-125.png",
-        available: true
-    },
-    {
-        id: 13,
-        name: "Honda Beat 110",
-        image: "image/car-beat-110.png",
-        available: false
-    }
-];
 
 // DOM Elements
 const carsGrid = document.getElementById('carsGrid');
@@ -247,7 +166,17 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// Scroll to car models section
+function scrollToCarModels() {
+    const carModelsSection = document.getElementById('car-rental');
+    if (carModelsSection) {
+        carModelsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+window.scrollToCarModels = scrollToCarModels;
+
 // Render car cards in grid
+/* 
 function renderCars() {
     if (!carsGrid) return;
     carsGrid.innerHTML = carsData.map(car => createCarCard(car)).join('');
@@ -302,6 +231,7 @@ function handleDetails(carId) {
         alert(`${car.name}\n\nDetailed specifications and availability will be shown here.\n\nFeatures:\n• Air Conditioning\n• Bluetooth Audio\n• GPS Navigation\n• Fuel Efficient`);
     }
 }
+*/
 
 // Scroll to car models section
 function scrollToCarModels() {
@@ -324,13 +254,41 @@ function initSmoothScroll() {
     });
 }
 
+// Rent & Details buttons (base DOM)
+function initCarButtons() {
+    document.querySelectorAll('.btn-rent').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const name = btn.getAttribute('data-car-name') || 'this car';
+
+            if (name.toLowerCase().includes('bezza') && name.includes('2023')) {
+                window.location.href = "/booking/calendar";
+            } else {
+                alert(`Renting: ${name}\n\nPlease login to continue with the rental process.`);
+            }
+        });
+    });
+
+        document.querySelectorAll('.btn-details').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const card = btn.closest('.car-card');
+            if (!card) return;
+            const details = card.querySelector('.car-details');
+            if (!details) return;
+
+            const isHidden = getComputedStyle(details).display === 'none';
+            details.style.display = isHidden ? 'block' : 'none';
+        });
+    });
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    renderCars();
+    //renderCars();
     updateHeroCar(0, false); // Initialize first slide without animation
     updateDots();
     startAutoPlay();
     initSmoothScroll();
+    initCarButtons();   
 });
 
 // Cleanup on page unload
