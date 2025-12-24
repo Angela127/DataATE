@@ -1,0 +1,136 @@
+/* Override body background if personal-data.css doesn't cover it fully or to match standalone look */
+body {
+    /* Ensure gradient is applied if personal-data.css has it, otherwise fallback */
+    background: linear-gradient(135deg, #D3DCE3 0%, #C5CED6 100%);
+    min-height: 100vh;
+}
+
+.loyalty-card {
+    background-color: #55585d;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    color: white;
+    text-align: center;
+}
+
+.loyalty-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.stamps-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    justify-items: center;
+}
+
+.stamp-slot {
+    width: 50px;
+    height: 50px;
+    background-color: #d1d5db;
+    /* Gray-300 */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stamp-slot.active {
+    background-color: transparent;
+    border: 2px solid white;
+}
+
+.stamp-slot.filled {
+    background-color: white;
+    position: relative;
+}
+
+.history-card {
+    background-color: #9ca3af;
+    /* Gray-400 */
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 80px;
+    /* Space for fixed bottom buttons */
+    min-height: 300px;
+    color: #1f2937;
+    /* Gray-800 */
+}
+
+.history-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 24px;
+    color: white;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.history-icon {
+    width: 45px;
+    height: 45px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    border: 2px solid #374151;
+}
+
+.history-text {
+    flex-grow: 1;
+    font-size: 14px;
+}
+
+.history-date {
+    font-size: 12px;
+    color: #4b5563;
+    /* Gray-600 */
+    font-weight: 700;
+}
+
+.bottom-buttons {
+    position: fixed;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 20px;
+}
+
+.btn-redeem {
+    background-color: #dc2626;
+    /* Red-600 */
+    color: white;
+    padding: 12px 40px;
+    border-radius: 8px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    min-width: 120px;
+}
+
+.btn-redeem:disabled {
+    background-color: #ef4444;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Star SVG Icon */
+.star-icon {
+    color: #374151;
+}
