@@ -206,7 +206,7 @@ class RentalController extends Controller
 
         $bookingDetails = [
             'car' => $plate_no,
-            'destination' => $request->query('destination', 'Student Mall'),
+            'destination' => $request->query('destination', 'null'),
             'pickup_location' => $request->query('Pickup', 'Student Mall'),
             'return_location' => $request->query('Return', 'Student Mall'),
             'start_time' => $start_time ? Carbon::parse($start_time)->format('Y-m-d H:i:s') : now()->format('Y-m-d H:i:s'),

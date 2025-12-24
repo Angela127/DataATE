@@ -295,3 +295,14 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('beforeunload', () => {
     stopAutoPlay();
 });
+
+document.querySelectorAll('.btn-rent').forEach(button => {
+    button.addEventListener('click', function() {
+        const carPlate = this.dataset.carPlate;
+        const carName = this.dataset.carName;
+
+        // Build URL with query parameter
+        const url = `/booking/calendar?car=${encodeURIComponent(carPlate)}`;
+        window.location.href = url;
+    });
+});

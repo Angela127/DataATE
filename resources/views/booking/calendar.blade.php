@@ -193,42 +193,25 @@
     <input type="hidden" name="pickup_lng" id="pickup_lng" value="103.636647">
 </div>
 
-<div id="mapModal" class="map-modal">
-    <!-- Overlay to close modal -->
-    <div class="map-overlay" onclick="closeMapPicker()"></div>
-
-    <!-- Modal container -->
-    <div class="map-container" style="width: 90%; max-width: 600px; padding: 20px; border-radius: 10px; background: #fff; position: relative;">
-        
-        <!-- Header -->
-        <div class="map-header" style="margin-bottom: 10px;">
-            <span class="map-title" style="font-weight: 600; font-size: 18px;">Select Location</span>
+<div id="mapModal" class="time-picker-modal">
+    <div class="time-picker-overlay" onclick="closeMapPicker()"></div>
+    <div class="time-picker-container" style="width: 90%; max-width: 600px; padding: 20px;">
+        <div class="time-picker-header">
+            <span class="time-picker-title">Select Location</span>
         </div>
-
-        <!-- Search input -->
+        
         <input id="mapSearchInput" type="text" placeholder="Search for a place..." 
-               style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;">
-
-        <!-- Map canvas -->
-        <div id="mapCanvas" style="height: 400px; width: 100%; border-radius: 8px; margin-bottom: 10px;"></div>
-
-        <!-- Actions -->
-        <div class="map-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button type="button" class="map-btn default-location" 
-                    style="flex: 1; background: #14213D; color: white; padding: 10px; border-radius: 8px;"
-                    onclick="setDefaultLocation()">Use Student Mall</button>
-
-            <button type="button" class="map-btn confirm-selection" 
-                    style="flex: 1; background: #3F5481; color: white; padding: 10px; border-radius: 8px;"
-                    onclick="confirmMapSelection()">Confirm Selection</button>
-
-            <button type="button" class="map-btn cancel-selection" 
-                    style="flex: 1; background: #E75B5B; color: white; padding: 10px; border-radius: 8px;"
-                    onclick="closeMapPicker()">Cancel</button>
+               style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px;">
+        
+        <div id="mapCanvas" style="height: 400px; width: 100%; border-radius: 8px;"></div>
+        
+        <div class="time-picker-actions" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" class="time-picker-btn" style="background: #14213D; color: white; flex: 1;" onclick="setDefaultLocation()">Use Student Mall</button>
+            <button type="button" class="time-picker-btn ok" style="flex: 1;" onclick="confirmMapSelection()">Confirm Selection</button>
+            <button type="button" class="time-picker-btn cancel" style="flex: 1;" onclick="closeMapPicker()">Cancel</button>
         </div>
     </div>
 </div>
-
 
 <div class="form-group">
     <label>Return Location</label>
