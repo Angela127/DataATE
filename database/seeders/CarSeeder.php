@@ -19,7 +19,7 @@ class CarSeeder extends Seeder
             'plate_no' => 'ABC 4321',
             'model' => 'Honda Beat 110',
             'price_hour' => 1.00,
-            'availability_status' => 'Not Available',
+            'availability_status' => false, // Not Available
             'fuel_level' => 3,
             'car_mileage' => 100,
             'image_path' => 'image/car-beat-110.png',
@@ -29,7 +29,7 @@ class CarSeeder extends Seeder
             'plate_no' => 'JJY 8722',
             'model' => 'Perodua Axia 2014',
             'price_hour' => 3.00,
-            'availability_status' => 'Available',
+            'availability_status' => true, // Available
             'fuel_level' => 3,
             'car_mileage' => 100,
             'image_path' => 'image/car-axia-2014.png',
@@ -39,7 +39,7 @@ class CarSeeder extends Seeder
             'plate_no' => 'JXM 1109',
             'model' => 'Perodua Bezza 2013',
             'price_hour' => 6.00,
-            'availability_status' => 'Available',
+            'availability_status' => true, // Available
             'fuel_level' => 6,
             'car_mileage' => 200,
             'image_path' => 'image/car-bezza-2013.png',
@@ -49,7 +49,7 @@ class CarSeeder extends Seeder
             'plate_no' => 'LSY 8955',
             'model' => 'Honda Dash 125',
             'price_hour' => 2.00,
-            'availability_status' => 'Available',
+            'availability_status' => true, // Available
             'fuel_level' => 3,
             'car_mileage' => 150,
             'image_path' => 'image/car-dash-125.png',
@@ -59,7 +59,7 @@ class CarSeeder extends Seeder
             'plate_no' => 'xxz 2711',
             'model' => 'Honda Dash 125',
             'price_hour' => 2.00,
-            'availability_status' => 'Not Available',
+            'availability_status' => false, // Not Available
             'fuel_level' => 3,
             'car_mileage' => 150,
             'image_path' => 'image/car-dash-125.png',

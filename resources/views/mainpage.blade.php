@@ -102,7 +102,7 @@
     <div class="cars-grid" id="carsGrid">
         @forelse ($cars as $car)
             @php
-                $isAvailable = $car->availability_status === 'Available';
+                $isAvailable = (bool) $car->availability_status;
                 // 如果 database 裡沒有 image_path，就用預設圖
                 $imagePath = $car->image_path ?? 'image/default-avatar.svg';
             @endphp
@@ -126,7 +126,7 @@
                     <div class="car-details" style="display: none;">
                         <p class="car-price">RM {{ number_format($car->price_hour, 2) }} / hour</p>
                         <p class="car-status {{ $isAvailable ? 'status-available' : 'status-unavailable' }}">
-                            {{ $car->availability_status }}
+                            {{ $isAvailable ? 'Available' : 'Not Available' }}
                         </p>
                         <p class="car-meta">Mileage: {{ $car->car_mileage }} km</p>
                         <p class="car-meta">Fuel: {{ $car->fuel_level }}%</p>

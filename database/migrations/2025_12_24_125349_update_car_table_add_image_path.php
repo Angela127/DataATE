@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('car', function (Blueprint $table) {
-            // 在 car_mileage 后面加一个 image_path 字段
             $table->string('image_path')
                   ->nullable()
                   ->after('car_mileage');
@@ -25,7 +24,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('car', function (Blueprint $table) {
-            // 回滚时，删掉 image_path 字段
             $table->dropColumn('image_path');
         });
     }
