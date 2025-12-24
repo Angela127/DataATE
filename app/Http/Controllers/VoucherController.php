@@ -16,7 +16,7 @@ class VoucherController extends Controller
         $customer = Auth::user()->customer;
         
         if (!$customer) {
-            return redirect()->route('home');
+            return redirect()->route('mainpage');
         }
 
         $activeVouchers = $customer->vouchers()->active()->latest()->get();

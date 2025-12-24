@@ -11,6 +11,11 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Geist:wght@400;500&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
 </head>
 
 <body>
@@ -177,98 +182,164 @@
                 <div class="duration-hours" id="durationHours"></div>
             </div>
 
-            
-            <!-- Pick Up Location -->
-            <div class="form-group">
-                <label>Pick Up Location</label>
-                <div class="input-field map-group">
-                    <input type="text" id="pickupLocation" value="Student Mall" placeholder="Enter pick up location">
-                    <button type="button" class="map-icon-btn" onclick="openMapPicker('pickupLocation')">📍</button>
-                </div>
-                <span class="field-note">A minimum charge of RM10 for location besides Student Mall</span>
-            </div>
 
-            <!-- Return Location -->
-            <div class="form-group">
-                <label>Return Location</label>
-                <div class="input-field map-group">
-                    <input type="text" id="returnLocation" value="Student Mall" placeholder="Enter return location">
-                    <button type="button" class="map-icon-btn" onclick="openMapPicker('returnLocation')">📍</button>
-                </div>
-                <span class="field-note">A minimum charge of RM10 for location besides Student Mall</span>
-            </div>
+<div class="form-group">
+    <label>Pick Up Location</label>
+    <div class="input-field map-group">
+        <input type="text" id="pickupLocation" value="Student Mall" placeholder="Enter pick up location">
+        <button type="button" class="map-icon-btn" onclick="openMapPicker('pickupLocation')">📍</button>
+    </div>
+    <input type="hidden" name="pickup_lat" id="pickup_lat" value="1.558557">
+    <input type="hidden" name="pickup_lng" id="pickup_lng" value="103.636647">
+</div>
 
-            <div class="form-group">
-                <label>Destination</label>
-                <div class="input-field map-group">
-                    <input type="text" id="destination" name="destination" value="{{ $destination ?? '' }}"
-                        placeholder="Enter destination">
-                    <button type="button" class="map-icon-btn" onclick="openMapPicker('destination')">📍</button>
-                </div>
-            </div>
+<div id="mapModal" class="map-modal">
+    <!-- Overlay to close modal -->
+    <div class="map-overlay" onclick="closeMapPicker()"></div>
 
+    <!-- Modal container -->
+    <div class="map-container" style="width: 90%; max-width: 600px; padding: 20px; border-radius: 10px; background: #fff; position: relative;">
+        
+        <!-- Header -->
+        <div class="map-header" style="margin-bottom: 10px;">
+            <span class="map-title" style="font-weight: 600; font-size: 18px;">Select Location</span>
         </div>
 
-        <!-- Confirm Button -->
-<button type="button" class="confirm-btn" onclick="confirmBooking()">
-    Confirm
-</button>
+        <!-- Search input -->
+        <input id="mapSearchInput" type="text" placeholder="Search for a place..." 
+               style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;">
 
-    <!-- Time Picker Modal -->
-    <div class="time-picker-modal" id="timePickerModal">
-        <div class="time-picker-overlay" onclick="closeTimePicker()"></div>
-        <div class="time-picker-container">
-            <div class="time-picker-header">
-                <span class="time-picker-title" id="timePickerTitle">Select time</span>
-            </div>
+        <!-- Map canvas -->
+        <div id="mapCanvas" style="height: 400px; width: 100%; border-radius: 8px; margin-bottom: 10px;"></div>
 
-            <div class="time-picker-content">
-                <!-- Time Input Display -->
-                <div class="time-input-display">
-                    <div class="time-input-group">
-                        <div class="time-input-box active" id="hourInput" onclick="setTimeMode('hour')">
-                            <span id="selectedHour">07</span>
+        <!-- Actions -->
+        <div class="map-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" class="map-btn default-location" 
+                    style="flex: 1; background: #14213D; color: white; padding: 10px; border-radius: 8px;"
+                    onclick="setDefaultLocation()">Use Student Mall</button>
+
+            <button type="button" class="map-btn confirm-selection" 
+                    style="flex: 1; background: #3F5481; color: white; padding: 10px; border-radius: 8px;"
+                    onclick="confirmMapSelection()">Confirm Selection</button>
+
+            <button type="button" class="map-btn cancel-selection" 
+                    style="flex: 1; background: #E75B5B; color: white; padding: 10px; border-radius: 8px;"
+                    onclick="closeMapPicker()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="form-group">
+    <label>Return Location</label>
+    <div class="input-field map-group">
+        <input type="text" id="returnLocation" value="Student Mall" placeholder="Enter return location">
+        <button type="button" class="map-icon-btn" onclick="openMapPicker('returnLocation')">📍</button>
+    </div>
+    <input type="hidden" name="return_lat" id="return_lat" value="1.558557">
+    <input type="hidden" name="return_lng" id="return_lng" value="103.636647">
+</div>
+
+<div id="mapModal" class="time-picker-modal">
+    <div class="time-picker-overlay" onclick="closeMapPicker()"></div>
+    <div class="time-picker-container" style="width: 90%; max-width: 600px; padding: 20px;">
+        <div class="time-picker-header">
+            <span class="time-picker-title">Select Location</span>
+        </div>
+        
+        <input id="mapSearchInput" type="text" placeholder="Search for a place..." 
+               style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px;">
+        
+        <div id="mapCanvas" style="height: 400px; width: 100%; border-radius: 8px;"></div>
+        
+        <div class="time-picker-actions" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="time-picker-btn" style="background: #14213D; color: white; flex: 1;" onclick="setDefaultLocation()">Use Student Mall</button>
+            <button class="time-picker-btn ok" style="flex: 1;" onclick="confirmMapSelection()">Confirm Selection</button>
+            <button class="time-picker-btn cancel" style="flex: 1;" onclick="closeMapPicker()">Cancel</button>
+        </div>
+    </div>
+</div>
+                    <!-- Destination -->
+                    <div class="form-group">
+                        <label>Destination</label>
+                        <div class="input-field map-group">
+                            <input type="text" id="destination" name="destination" value="{{ $destination ?? '' }}"
+                                placeholder="Enter destination">
+                            <button type="button" class="map-icon-btn"
+                                onclick="openMapPicker('destination')">📍</button>
                         </div>
-                        <span class="time-separator">:</span>
-                        <div class="time-input-box" id="minuteInput" onclick="setTimeMode('minute')">
-                            <span id="selectedMinute">00</span>
+                        <input type="hidden" name="destination_lat" id="destination_lat">
+                        <input type="hidden" name="destination_lng" id="destination_lng">
+
+                    </div>
+
+                </div>
+
+                <!-- Confirm Button -->
+                <button type="button" class="confirm-btn" onclick="confirmBooking()">
+                    Confirm
+                </button>
+
+                <!-- Time Picker Modal -->
+                <div class="time-picker-modal" id="timePickerModal">
+                    <div class="time-picker-overlay" onclick="closeTimePicker()"></div>
+                    <div class="time-picker-container">
+                        <div class="time-picker-header">
+                            <span class="time-picker-title" id="timePickerTitle">Select time</span>
+                        </div>
+
+                        <div class="time-picker-content">
+                            <!-- Time Input Display -->
+                            <div class="time-input-display">
+                                <div class="time-input-group">
+                                    <div class="time-input-box active" id="hourInput" onclick="setTimeMode('hour')">
+                                        <span id="selectedHour">07</span>
+                                    </div>
+                                    <span class="time-separator">:</span>
+                                    <div class="time-input-box" id="minuteInput" onclick="setTimeMode('minute')">
+                                        <span id="selectedMinute">00</span>
+                                    </div>
+                                </div>
+                                <div class="period-selector">
+                                    <button class="period-btn active" id="amBtn" onclick="setPeriod('AM')">AM</button>
+                                    <button class="period-btn" id="pmBtn" onclick="setPeriod('PM')">PM</button>
+                                </div>
+                            </div>
+
+                            <!-- Clock Face -->
+                            <div class="clock-face" id="clockFace">
+                                <div class="clock-center"></div>
+                                <div class="clock-hand" id="clockHand"></div>
+                                <!-- Hour numbers will be generated by JS -->
+                            </div>
+                        </div>
+
+                        <div class="time-picker-actions">
+                            <button class="time-picker-btn cancel" onclick="closeTimePicker()">Cancel</button>
+                            <button class="time-picker-btn ok" onclick="confirmTime()">OK</button>
                         </div>
                     </div>
-                    <div class="period-selector">
-                        <button class="period-btn active" id="amBtn" onclick="setPeriod('AM')">AM</button>
-                        <button class="period-btn" id="pmBtn" onclick="setPeriod('PM')">PM</button>
+                </div>
+            </div>
+            <script
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6G0oqiCvdkEPLPmtqJcTHjxsZCPF8aOM&libraries=places"></script>
+            <script src="{{ asset('js/booking_calendar.js') }}"></script>
+
+            <!-- Map Modal -->
+            <div id="mapModal" class="map-modal">
+                <div class="map-overlay" onclick="closeMapPicker()"></div>
+                <div class="map-container">
+                    <div id="mapCanvas" style="height: 400px; width: 100%; border-radius: 10px;"></div>
+                    <div style="margin-top:10px; text-align: right;">
+                        <button class="time-picker-btn ok" onclick="confirmMapSelection()">Confirm Location</button>
+                        <button class="time-picker-btn cancel" onclick="closeMapPicker()">Cancel</button>
+                        <!-- New button for default location -->
+                        <button class="time-picker-btn" style="background: #14213D; color: white;"
+                            onclick="setDefaultLocation()">Use Student Mall</button>
                     </div>
                 </div>
-
-                <!-- Clock Face -->
-                <div class="clock-face" id="clockFace">
-                    <div class="clock-center"></div>
-                    <div class="clock-hand" id="clockHand"></div>
-                    <!-- Hour numbers will be generated by JS -->
-                </div>
             </div>
 
-            <div class="time-picker-actions">
-                <button class="time-picker-btn cancel" onclick="closeTimePicker()">Cancel</button>
-                <button class="time-picker-btn ok" onclick="confirmTime()">OK</button>
-            </div>
-        </div>
-    </div>
-    </div>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6G0oqiCvdkEPLPmtqJcTHjxsZCPF8aOM&libraries=places"></script>
-    <script src="{{ asset('js/booking_calendar.js') }}"></script>
-    <!-- Map Modal -->
-    <div id="mapModal" class="map-modal">
-        <div class="map-overlay" onclick="closeMapPicker()"></div>
-        <div class="map-container">
-            <div id="mapCanvas" style="height: 400px; width: 100%; border-radius: 10px;"></div>
-            <div style="margin-top:10px; text-align: right;">
-                <button class="time-picker-btn ok" onclick="confirmMapSelection()">Confirm Location</button>
-                <button class="time-picker-btn cancel" onclick="closeMapPicker()">Cancel</button>
-            </div>
-        </div>
-    </div>
 
 </body>
 

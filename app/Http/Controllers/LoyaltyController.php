@@ -13,7 +13,7 @@ class LoyaltyController extends Controller
         $customer = Auth::user()->customer;
         
         if (!$customer) {
-            return redirect()->route('home')->with('error', 'Customer profile not found.');
+            return redirect()->route('mainpage')->with('error', 'Customer profile not found.');
         }
 
         $current = $customer->currentLoyalty();

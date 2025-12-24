@@ -28,8 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/order-history', [BookingController::class, 'orderHistory'])->name('profile.order-history');
     Route::get('/booking/{id}/cancel', [BookingController::class, 'showCancelForm'])->name('booking.cancel.form');
     Route::post('/booking/{id}/cancel', [BookingController::class, 'cancelBooking'])->name('booking.cancel');
+    
 
-    // Loyalty & Vouchers
+    // Loyalty Routes
     Route::get('/loyalty', [LoyaltyController::class, 'index'])->name('loyalty.index');
     Route::get('/loyalty/redeem', [VoucherController::class, 'redeemPage'])->name('loyalty.redeem');
     Route::post('/loyalty/redeem', [VoucherController::class, 'store'])->name('voucher.store');

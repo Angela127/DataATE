@@ -102,20 +102,11 @@ class RentalController extends Controller
         ));
     }
 
-    public function voucher(Request $request)
+     public function voucher()
     {
-        // Get booking details from query parameters to preserve them
-        $bookingParams = $request->all();
-        
-        $user = \Illuminate\Support\Facades\Auth::user();
-        $vouchers = collect();
-
-        if ($user && $user->customer) {
-            $vouchers = $user->customer->vouchers()->active()->get();
-        }
-
-        return view('booking.voucher', compact('vouchers', 'bookingParams'));
+        return view('booking.voucher');
     }
+    
 
     public function confirm(Request $request)
     {
