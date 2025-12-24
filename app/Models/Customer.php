@@ -58,6 +58,22 @@ class Customer extends Model
     }
 
     /**
+     * Get the loyalty history for the customer.
+     */
+    public function loyalties(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Loyalty::class);
+    }
+
+    /**
+     * Get the current loyalty status (latest record).
+     */
+    public function currentLoyalty(): ?Loyalty
+    {
+        return $this->loyalties()->latest()->first();
+    }
+
+    /**
      * Assign a sequential customer ID if not provided.
      */
     protected static function booted(): void

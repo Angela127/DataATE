@@ -93,7 +93,7 @@
             </a>
 
             <!-- Loyalty -->
-            <a href="#loyalty" class="menu-item">
+            <a href="{{ route('loyalty.index') }}" class="menu-item">
                 <div class="menu-item-left">
                     <div class="menu-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
