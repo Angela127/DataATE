@@ -190,7 +190,7 @@
         <button class="pay-now-btn" onclick="proceedToPayment()">Pay Now</button>
     </div>
     <script>
-    const PICKUP_URL = "{{ route('booking.pickup') }}";
+    const PICKUP_URL = "{{ route('payment.upload_receipt') }}";
 </script>
 <script src="{{ asset('js/booking_confirm.js') }}"></script>
 

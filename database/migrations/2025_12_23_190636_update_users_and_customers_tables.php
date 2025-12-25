@@ -11,26 +11,38 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('avatar')->nullable()->after('password');
-        });
+        // Add avatar to users only if it doesn't exist
+        if (Schema::hasTable('users') && !Schema::hasColumn('users', 'avatar')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('avatar')->nullable()->after('password');
+            });
+        }
 
-        Schema::table('customers', function (Blueprint $table) {
-            $table->dropColumn('balance');
-        });
+        // Drop balance from customers only if the column exists
+        if (Schema::hasTable('customers') && Schema::hasColumn('customers', 'balance')) {
+            Schema::table('customers', function (Blueprint $table) {
+                $table->dropColumn('balance');
+            });
+        }
     }
 
     /**
-     * Reverse the migrations.
+     * Reverse the migrations (for php artisan migrate:rollback).
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('avatar');
-        });
+        // Only re-add balance if it was removed (won't restore data)
+        if (Schema::hasTable('customers') && !Schema::hasColumn('customers', 'balance')) {
+            Schema::table('customers', function (Blueprint $table) {
+                $table->decimal('balance', 10, 2)->default(0);
+            });
+        }
 
-        Schema::table('customers', function (Blueprint $table) {
-            $table->decimal('balance', 10, 2)->default(0);
-        });
+        // Only remove avatar if it exists
+        if (Schema::hasTable('users') && Schema::hasColumn('users', 'avatar')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('avatar');
+            });
+        }
     }
 };
