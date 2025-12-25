@@ -481,7 +481,7 @@
                     </svg>
                 </div>
                 <div class="stat-value">0</div>
-                <div class="stat-label">Loyalty Points</div>
+                <div class="stat-label">Vouchers</div>
             </div>
         </div>
 

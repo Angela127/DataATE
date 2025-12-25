@@ -89,6 +89,13 @@
     <span class="price-amount" id="addonsAmount">RM{{ number_format($bookingDetails['addons'], 2) }}</span>
 </div>
 
+@if($bookingDetails['discount'] > 0)
+<div class="detail-row" style="color: #2ECC71;">
+    <span class="price-value">Discount:</span>
+    <span class="price-amount">-RM{{ number_format($bookingDetails['discount'], 2) }}</span>
+</div>
+@endif
+
 
             <div class="price-divider"></div>
 
@@ -99,6 +106,19 @@
 </div>
 
             <button class="edit-btn" onclick="editBooking()">Edit</button>
+            <script>
+                function editBooking() {
+                    const params = new URLSearchParams({
+                        car: '{{ $bookingDetails['car'] ?? request('car') }}',
+                        destination: '{{ $bookingDetails['destination'] }}',
+                        Pickup: '{{ $bookingDetails['pickup_location'] }}',
+                        Return: '{{ $bookingDetails['return_location'] }}',
+                        start_time: '{{ $bookingDetails['start_time'] }}',
+                        end_time: '{{ $bookingDetails['end_time'] }}'
+                    });
+                    window.location.href = "{{ route('booking.calendar') }}?" + params.toString();
+                }
+            </script>
         </section>
 
         <!-- Voucher Section -->
@@ -110,28 +130,34 @@
                         <path d="M10 5V19" stroke="#52698D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
                     </svg>
                 </div>
-                <div class="voucher-content">
-                    <span class="voucher-label" id="voucherLabel">Voucher</span>
-                    <span class="voucher-status" id="voucherStatus">Select a voucher</span>
-                </div>
-                <a href="{{ route('booking.voucher') }}" class="voucher-select-btn" id="voucherSelectBtn">
-                    <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 1L7 7L1 13" stroke="#52698D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </a>
-            </div>
-
-            <!-- Applied Voucher Display -->
-            <div class="applied-voucher" id="appliedVoucher" style="display: none;">
-                <div class="applied-voucher-info">
-                    <span class="applied-label">Applied:</span>
-                    <span class="applied-name" id="appliedVoucherName"></span>
-                </div>
-                <button class="remove-voucher-btn" onclick="removeVoucher()">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 1L13 13M1 13L13 1" stroke="#E75B5B" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </button>
+                
+                @if(!empty($bookingDetails['voucher_code']))
+                    <!-- Applied Voucher State -->
+                    <div class="voucher-content">
+                        <span class="voucher-label" id="voucherLabel" style="color: #2ECC71;">Voucher Applied</span>
+                        <span class="voucher-status" id="voucherStatus" style="color: #333; font-weight: 600;">{{ $bookingDetails['voucher_code'] }}</span>
+                    </div>
+                    <!-- Remove Button (Link essentially reloading without voucher_code) -->
+                    @php
+                        $paramsWithoutVoucher = request()->except('voucher_code');
+                    @endphp
+                    <a href="{{ route('booking.confirm', $paramsWithoutVoucher) }}" class="remove-voucher-btn" title="Remove Voucher">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1L13 13M1 13L13 1" stroke="#E75B5B" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                @else
+                    <!-- No Voucher State -->
+                    <div class="voucher-content">
+                        <span class="voucher-label" id="voucherLabel">Voucher</span>
+                        <span class="voucher-status" id="voucherStatus">Select a voucher</span>
+                    </div>
+                    <a href="{{ route('booking.voucher', request()->all()) }}" class="voucher-select-btn" id="voucherSelectBtn">
+                        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1L7 7L1 13" stroke="#52698D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                @endif
             </div>
         </section>
 
@@ -146,16 +172,16 @@
                     <span class="payment-name">QR Payment</span>
                 </label>
                 
-                <label class="payment-option">
-                    <input type="radio" name="payment" value="card">
+                <label class="payment-option" style="opacity: 0.5; pointer-events: none;">
+                    <input type="radio" name="payment" value="card" disabled>
                     <span class="radio-custom"></span>
-                    <span class="payment-name">Credit/Debit Card</span>
+                    <span class="payment-name">Credit/Debit Card (Unavailable)</span>
                 </label>
                 
-                <label class="payment-option">
-                    <input type="radio" name="payment" value="bank">
+                <label class="payment-option" style="opacity: 0.5; pointer-events: none;">
+                    <input type="radio" name="payment" value="bank" disabled>
                     <span class="radio-custom"></span>
-                    <span class="payment-name">Online Banking</span>
+                    <span class="payment-name">Online Banking (Unavailable)</span>
                 </label>
             </div>
         </section>

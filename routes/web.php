@@ -8,6 +8,7 @@ use App\Http\Controllers\LoyaltyController;
 use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RentalController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', [HomeController::class, 'index'])->name('mainpage');
 
@@ -61,6 +62,9 @@ Route::middleware('auth')->group(function () {
     // Admin
     Route::middleware('checkAdmin')->group(function () {
         Route::get('/booking', [RentalController::class, 'index'])->name('booking.index');
+        Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+        Route::get('/admin/voucher-stats', [AdminController::class, 'voucherStats'])->name('admin.voucher_stats');
+        Route::get('/admin/customer-loyalty', [AdminController::class, 'customerLoyalty'])->name('admin.customer_loyalty');
     });
 
     

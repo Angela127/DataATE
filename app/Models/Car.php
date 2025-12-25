@@ -20,5 +20,6 @@ class Car extends Model
         'availability_status',
         'fuel_level',
         'car_mileage',
+        'image_path',
     ];
 }
