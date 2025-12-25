@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Rental;
 use App\Models\Car;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class RentalController extends Controller
 {
     /**
-     * Store a new rental record.
+     * Store a new rental record (API style).
      */
     public function store(Request $request)
     {
@@ -40,6 +42,9 @@ class RentalController extends Controller
         ], 201);
     }
 
+    /**
+     * Show the booking calendar page.
+     */
     public function calendar(Request $request)
     {
         // Fetch all rentals with their car relationship
@@ -84,11 +89,11 @@ class RentalController extends Controller
 
         // Pass everything to the view
         return view('booking.calendar', compact(
-            'rentals', 
-            'cars', 
-            'destination', 
-            'start_time', 
-            'end_time', 
+            'rentals',
+            'cars',
+            'destination',
+            'start_time',
+            'end_time',
             'bookingHours',
             'depositAmount',
             'bookingPrice',
@@ -121,16 +126,17 @@ class RentalController extends Controller
         // Get booking details from query parameters
         $start_time = $request->query('start_time');
         $end_time = $request->query('end_time');
-        
+
         // Calculate hours from the provided times or use passed hours
         $bookingHours = (int) $request->query('hours', 0);
-        
+
         if ($start_time && $end_time && $bookingHours == 0) {
             try {
                 $start = Carbon::parse($start_time);
                 $end = Carbon::parse($end_time);
+
                 $bookingHours = $start->diffInHours($end, false); // false means don't use absolute value
-                
+
                 // If negative or zero, something is wrong
                 if ($bookingHours <= 0) {
                     $bookingHours = (int) $request->query('hours', 0);
@@ -217,5 +223,97 @@ class RentalController extends Controller
 
         // Return confirm booking view with data
         return view('booking.confirm', compact('car', 'bookingDetails'));
+    }
+
+    /**
+     * Handle receipt upload and save to rental.
+     */
+    public function storeReceipt(Request $request)
+    {
+        // Validate the uploaded file
+        $request->validate([
+            'receipt' => 'required|file|mimes:jpg,png,jpeg,pdf|max:2048', // Max 2MB
+        ]);
+
+        $user = Auth::user();
+
+        // Store the file in storage/app/public/receipts/
+        $path = $request->file('receipt')->store('receipts', 'public');
+
+        // Find the latest rental where customer_id matches the logged-in user's ID
+        $rental = Rental::where('customer_id', $user->id)
+            ->latest()
+            ->first();
+
+        if (!$rental) {
+            return back()->withErrors('No rental record found for this user.');
+        }
+
+        // Save receipt path and update payment status
+        $rental->receipt_path = $path;
+        $rental->payment_status = 'paid';
+        $rental->save();
+
+        // Redirect with success message
+        return redirect()->route('mainpage')->with('success', 'Receipt uploaded! Your booking is pending staff approval.');
+    }
+
+    /**
+     * Show pickup form.
+     */
+    public function pickup()
+    {
+        return view('booking.pickup_form');
+    }
+
+    /**
+     * Store pickup data.
+     */
+    public function storePickup(Request $request)
+    {
+        // Implement pickup logic later if needed
+        return redirect()->route('booking.calendar');
+    }
+
+    /**
+     * Show return form.
+     */
+    public function returnCar()
+    {
+        return view('booking.return');
+    }
+
+    /**
+     * Store return data.
+     */
+    public function storeReturn(Request $request)
+    {
+        // Implement return logic later
+        return redirect()->route('booking.complete');
+    }
+
+    /**
+     * Show completion page.
+     */
+    public function complete()
+    {
+        return view('booking.complete');
+    }
+
+    /**
+     * Show reminder page.
+     */
+    public function reminder()
+    {
+        return view('booking.reminder');
+    }
+
+    /**
+     * Admin: List all rentals.
+     */
+    public function index()
+    {
+        $rentals = Rental::with('user', 'car')->latest()->get();
+        return view('admin.booking.index', compact('rentals'));
     }
 }

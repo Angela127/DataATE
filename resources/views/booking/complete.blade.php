@@ -9,24 +9,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<div style="background: #f0f0f0; padding: 20px; margin: 20px; border-radius: 8px; font-family: monospace; font-size: 12px;">
-    <h3>Debug Information (Remove in production)</h3>
-    <hr>
-    <strong>Car:</strong> {{ $car ? $car->model . ' (' . $car->plate_no . ')' : 'No car selected' }}<br>
-    <strong>Booking Hours:</strong> {{ $bookingDetails['booking_hours'] }}<br>
-    <strong>Pickup Location:</strong> {{ $bookingDetails['pickup_location'] }}<br>
-    <strong>Return Location:</strong> {{ $bookingDetails['return_location'] }}<br>
-    <strong>Destination:</strong> {{ $bookingDetails['destination'] }}<br>
-    <strong>Start Time:</strong> {{ $bookingDetails['start_time'] }}<br>
-    <strong>End Time:</strong> {{ $bookingDetails['end_time'] }}<br>
-    <strong>Price:</strong> RM{{ number_format($bookingDetails['price'], 2) }}<br>
-    <strong>Total:</strong> RM{{ number_format($bookingDetails['total'], 2) }}<br>
-    <hr>
-    <strong>All Query Parameters:</strong><br>
-    @foreach(request()->query() as $key => $value)
-        {{ $key }}: {{ $value }}<br>
-    @endforeach
-</div>
+
+@if(isset($car) && isset($bookingDetails))
+    <div style="background: #f0f0f0; padding: 20px; margin: 20px; border-radius: 8px; font-family: monospace; font-size: 12px;">
+        <h3>Debug Information (Remove in production)</h3>
+        <hr>
+        <strong>Car:</strong> {{ $car ? $car->model . ' (' . $car->plate_no . ')' : 'No car selected' }}<br>
+        <strong>Booking Hours:</strong> {{ $bookingDetails['booking_hours'] }}<br>
+        <strong>Pickup Location:</strong> {{ $bookingDetails['pickup_location'] }}<br>
+        <strong>Return Location:</strong> {{ $bookingDetails['return_location'] }}<br>
+        <strong>Destination:</strong> {{ $bookingDetails['destination'] }}<br>
+        <strong>Start Time:</strong> {{ $bookingDetails['start_time'] }}<br>
+        <strong>End Time:</strong> {{ $bookingDetails['end_time'] }}<br>
+        <strong>Price:</strong> RM{{ number_format($bookingDetails['price'], 2) }}<br>
+        <strong>Total:</strong> RM{{ number_format($bookingDetails['total'], 2) }}<br>
+        <hr>
+        <strong>All Query Parameters:</strong><br>
+        @foreach(request()->query() as $key => $value)
+            {{ $key }}: {{ $value }}<br>
+        @endforeach
+    </div>
+@endif
+
 <body>
     <div class="complete-container">
         <!-- Header -->
@@ -100,4 +104,3 @@
     </div>
 </body>
 </html>
-
