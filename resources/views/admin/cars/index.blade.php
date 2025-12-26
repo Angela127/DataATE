@@ -100,6 +100,16 @@
             color: #000000ff;
         }
 
+        .fleet-table th.status-col,
+        .fleet-table td.status-col {
+            text-align: center; /* Status 居中 */
+        }
+
+        .fleet-table th.actions-col,
+        .fleet-table td.actions-col {
+            text-align: center; /* Actions 标题和内容都居中 */
+        }
+
         .fleet-table tbody tr:hover {
             background: #FFF7ED;
         }
@@ -155,6 +165,12 @@
             transform: translateY(-0.5px);
         }
 
+        .actions-wrapper {
+            display: inline-flex;   /* 让 Edit / Delete 贴在一起 */
+            align-items: center;
+            gap: 8px;              /* 控制两个按钮之间的距离 */
+        }
+
         .empty-state {
             text-align: center;
             color: #64748B;
@@ -208,8 +224,8 @@
                     <th>Price / Hour</th>
                     <th>Fuel Level</th>
                     <th>Mileage</th>
-                    <th>Status</th>
-                    <th style="text-align:right;">Actions</th>
+                    <th class="status-col">Status</th>
+                    <th class="actions-col">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -220,28 +236,29 @@
                         <td>RM {{ number_format($car->price_hour, 2) }}</td>
                         <td>{{ $car->fuel_level }}%</td>
                         <td>{{ number_format($car->car_mileage) }} km</td>
-                        <td>
+                        <td class="status-col">
                             @if($car->availability_status)
                                 <span class="badge-status badge-available">Available</span>
                             @else
                                 <span class="badge-status badge-unavailable">Not Avail.</span>
                             @endif
                         </td>
-                        <td style="text-align:right;">
-                            <a href="{{ route('admin.cars.edit', $car->plate_no) }}">
-                                <button type="button" class="btn-table btn-table-edit">Edit</button>
-                            </a>
+                        <td class="actions-col">
+                            <div class="actions-wrapper">
+                                <a href="{{ route('admin.cars.edit', $car->plate_no) }}">
+                                    <button type="button" class="btn-table btn-table-edit">Edit</button>
+                                </a>
 
-                            <form action="{{ route('admin.cars.destroy', $car->plate_no) }}"
-                                  method="POST"
-                                  style="display:inline-block"
-                                  onsubmit="return confirm('Delete this car?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-table btn-table-delete">
-                                    Delete
-                                </button>
-                            </form>
+                                <form action="{{ route('admin.cars.destroy', $car->plate_no) }}"
+                                      method="POST"
+                                      onsubmit="return confirm('Delete this car?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-table btn-table-delete">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
