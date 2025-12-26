@@ -17,12 +17,12 @@
         .fleet-table th { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: #000000ff; }
         .fleet-table tbody tr:hover { background: rgba(255, 247, 237, 0.5); }
         .sub-nav { display: flex; gap: 8px; margin-bottom: 20px; }
-        .sub-nav a { padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none; color: #64748B; background: #eff6ff; }
-        .sub-nav a.active { background: #FFEADD; color: #D35400; font-weight: 600; }
+        .sub-nav a { padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; color: #64748B; background: #eff6ff; }
+        .sub-nav a.active { background: #FFEADD; color: #D35400; }
     </style>
 
     <div class="fleet-header">
-        <div class="fleet-title">Customer Loyalty Program</div>
+        <div class="fleet-title">Customer Loyalty</div>
         <div class="fleet-toolbar">
             <div class="sub-nav" style="margin-bottom: 0;">
                 <a href="{{ route('admin.vouchers.index') }}">Voucher Stats</a>

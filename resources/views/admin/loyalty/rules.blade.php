@@ -7,8 +7,8 @@
         .fleet-toolbar { display: flex; gap: 12px; }
         .data-card { background: #FFFFFF; border-radius: 16px; padding: 32px; border: 1px solid #E2E8F0; box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06); max-width: 900px; }
         .sub-nav { display: flex; gap: 8px; margin-bottom: 20px; }
-        .sub-nav a { padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none; color: #64748B; background: #eff6ff; }
-        .sub-nav a.active { background: #FFEADD; color: #D35400; font-weight: 600; }
+        .sub-nav a { padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; color: #64748B; background: #eff6ff; }
+        .sub-nav a.active { background: #FFEADD; color: #D35400; }
         
         .form-label { display: block; font-size: 13px; font-weight: 600; color: #64748B; margin-bottom: 6px; }
         .form-input { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #CBD5E1; font-size: 14px; color: #1E293B; transition: all 0.2s; outline: none; }

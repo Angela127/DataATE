@@ -22,7 +22,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-primary); display: flex; min-height: 100vh; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-primary); display: flex; min-height: 100vh; overflow-y: scroll; }
 
         /* Sidebar */
         .sidebar {
