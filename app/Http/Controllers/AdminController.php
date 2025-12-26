@@ -25,11 +25,19 @@ class AdminController extends Controller
         // Count pending document approvals
         $pendingDocuments = Customer::where('documents_status', 'pending')->count();
 
+        // Fleet Overview Stats
+        $totalCars = \App\Models\Car::count();
+        $availableCars = \App\Models\Car::where('availability_status', 1)->count();
+        $rentedCars = \App\Models\Car::where('availability_status', 0)->count();
+
         return view('admin.dashboard', compact(
             'totalVouchers', 
             'totalRedeemed', 
             'totalExpired',
-            'pendingDocuments'
+            'pendingDocuments',
+            'totalCars',
+            'availableCars',
+            'rentedCars'
         ));
     }
 

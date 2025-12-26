@@ -129,7 +129,6 @@
             background: #FF7F50;
             color: #FFFFFF;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 127, 80, 0.35);
         }
 
         .btn-primary:hover {
@@ -329,7 +328,7 @@
             </div>
 
             <div class="fleet-form-footer">
-                <a href="{{ route('admin.cars.index') }}" class="btn-outline">Cancel</a>
+                <a href="{{ route('admin.cars.index') }}" class="btn-outline" style="text-decoration: none;">Cancel</a>
                 <button type="submit" class="btn-primary">Save car</button>
             </div>
         </form>

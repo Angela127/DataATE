@@ -19,7 +19,7 @@
         .section-divider { height:1px; background:#E2E8F0; margin-bottom:16px;}
         .fleet-form-footer { display:flex; justify-content:flex-end; gap:10px; margin-top:20px;}
         .btn-outline { border-radius:999px; border:1px solid #CBD5F5; padding:9px 18px; font-size:14px; color:#475569; background:#FFFFFF; cursor:pointer;}
-        .btn-primary { border-radius:999px; border:none; padding:10px 20px; font-size:14px; font-weight:600; background:#FF7F50; color:#FFFFFF; cursor:pointer; box-shadow:0 8px 20px rgba(255,127,80,0.35);}
+        .btn-primary { border-radius:999px; border:none; padding:10px 20px; font-size:14px; font-weight:600; background:#FF7F50; color:#FFFFFF; cursor:pointer; }
         .btn-primary:hover { background:#ff6a32;}
         .current-image { margin-top:6px; }
         .current-image img { max-width:160px; border-radius:12px; border:1px solid #E2E8F0;}
@@ -220,7 +220,7 @@
             </div>
 
             <div class="fleet-form-footer">
-                <a href="{{ route('admin.cars.index') }}" class="btn-outline">Cancel</a>
+                <a href="{{ route('admin.cars.index') }}" class="btn-outline" style="text-decoration: none;">Cancel</a>
                 <button type="submit" class="btn-primary">Save changes</button>
             </div>
         </form>

@@ -56,14 +56,11 @@
             background: #FF7F50;
             color: #FFFFFF;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 127, 80, 0.35);
             transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
         }
 
         .btn-add-car:hover {
             background: #ff6a32;
-            transform: translateY(-1px);
-            box-shadow: 0 10px 24px rgba(255, 127, 80, 0.45);
         }
 
         .fleet-card {
@@ -81,7 +78,7 @@
         }
 
         .fleet-table thead tr {
-            background: #FFF7ED;
+            background: rgba(255, 247, 237, 2);
         }
 
         .fleet-table th,
@@ -111,7 +108,7 @@
         }
 
         .fleet-table tbody tr:hover {
-            background: #FFF7ED;
+            background: rgba(255, 247, 237, 0.5);
         }
 
         .badge-status {
@@ -243,6 +240,7 @@
                                 <span class="badge-status badge-unavailable">Not Avail.</span>
                             @endif
                         </td>
+<<<<<<< Updated upstream
                         <td class="actions-col">
                             <div class="actions-wrapper">
                                 <a href="{{ route('admin.cars.edit', $car->plate_no) }}">
@@ -259,6 +257,23 @@
                                     </button>
                                 </form>
                             </div>
+=======
+                        <td style="text-align:right;">
+                            <a href="{{ route('admin.cars.edit', $car->plate_no) }}">
+                                <button type="button" class="btn-table btn-table-edit" style="text-decoration: none;">Edit</button>
+                            </a>
+
+                            <form action="{{ route('admin.cars.destroy', $car->plate_no) }}"
+                                  method="POST"
+                                  style="display:inline-block"
+                                  onsubmit="return confirm('Delete this car?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-table btn-table-delete" style="text-decoration: none;">
+                                    Delete
+                                </button>
+                            </form>
+>>>>>>> Stashed changes
                         </td>
                     </tr>
                 @empty
