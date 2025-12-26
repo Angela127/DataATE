@@ -107,7 +107,7 @@ class AdminController extends Controller
                         ->unique() // If multiple of same code exist? Unlikely but code is unique.
                         ->implode(', '),
                     'voucher_history' => $customer->vouchers
-                        ->filter(fn($v) => $v->status == 'used' || ($v->status == 'active' && $v->expiry_date < now()->startOfDay()))
+                        ->filter(fn($v) => $v->status == 'used' || $v->status == 'expired' || ($v->status == 'active' && $v->expiry_date < now()->startOfDay()))
                         ->map(function($v) use ($formatVoucher) {
                             $status = $v->status == 'used' ? 'Used' : 'Expired';
                             return $formatVoucher($v) . " [$status]";
