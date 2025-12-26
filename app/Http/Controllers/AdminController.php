@@ -22,10 +22,14 @@ class AdminController extends Controller
                             $q->where('status', 'active')->where('expiry_date', '<', now()->startOfDay());
                         })->count();
 
+        // Count pending document approvals
+        $pendingDocuments = Customer::where('documents_status', 'pending')->count();
+
         return view('admin.dashboard', compact(
             'totalVouchers', 
             'totalRedeemed', 
-            'totalExpired'
+            'totalExpired',
+            'pendingDocuments'
         ));
     }
 
@@ -117,5 +121,67 @@ class AdminController extends Controller
             });
 
         return view('admin.customer_loyalty', compact('customers'));
+    }
+
+    /**
+     * Display Document Approvals page.
+     */
+    public function documentApprovals(Request $request)
+    {
+        $status = $request->get('status', 'all');
+
+        $query = Customer::with('user')
+            ->whereNotNull('license_image')
+            ->whereNotNull('identity_card_image')
+            ->whereNotNull('matric_staff_image');
+
+        if ($status !== 'all') {
+            $query->where('documents_status', $status);
+        }
+
+        $customers = $query->latest('documents_submitted_at')->paginate(15);
+
+        // Count for badges
+        $pendingCount = Customer::where('documents_status', 'pending')->count();
+        $approvedCount = Customer::where('documents_status', 'approved')->count();
+        $rejectedCount = Customer::where('documents_status', 'rejected')->count();
+
+        return view('admin.document_approvals', compact('customers', 'status', 'pendingCount', 'approvedCount', 'rejectedCount'));
+    }
+
+    /**
+     * Approve customer documents.
+     */
+    public function approveDocuments($customerId)
+    {
+        $customer = Customer::findOrFail($customerId);
+
+        $customer->update([
+            'documents_status' => 'approved',
+            'documents_approved_at' => now(),
+            'documents_rejection_reason' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'Documents approved successfully for ' . $customer->user->name);
+    }
+
+    /**
+     * Reject customer documents with reason.
+     */
+    public function rejectDocuments(Request $request, $customerId)
+    {
+        $request->validate([
+            'rejection_reason' => 'required|string|max:500',
+        ]);
+
+        $customer = Customer::findOrFail($customerId);
+
+        $customer->update([
+            'documents_status' => 'rejected',
+            'documents_rejection_reason' => $request->rejection_reason,
+            'documents_approved_at' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'Documents rejected for ' . $customer->user->name);
     }
 }

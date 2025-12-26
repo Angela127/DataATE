@@ -119,6 +119,27 @@ class RentalController extends Controller
 
     public function confirm(Request $request)
     {
+        // Check if customer has approved documents
+        $user = Auth::user();
+        if ($user && $user->customer) {
+            if (!$user->customer->canRentCar()) {
+                $status = $user->customer->documents_status;
+                $message = 'You must upload and get approval for all required documents before renting a car.';
+                
+                if ($status === 'pending') {
+                    $message = 'Your documents are currently under review. Please wait for admin approval before renting a car.';
+                } elseif ($status === 'rejected') {
+                    $message = 'Your documents have been rejected. Please re-upload them addressing the admin\'s feedback.';
+                } elseif (!$user->customer->hasUploadedAllDocuments()) {
+                    $message = 'Please upload all required documents (License, Identity Card, and Matric/Staff Card) in your profile before renting a car.';
+                }
+                
+                return redirect()->route('profile.personal-data')->with('error', $message);
+            }
+        } else {
+            return redirect()->route('profile.personal-data')->with('error', 'Please complete your profile and upload required documents before renting a car.');
+        }
+
         // Get the selected car plate number from query parameter
         $plate_no = $request->query('car');
         $car = \App\Models\Car::where('plate_no', $plate_no)->first();

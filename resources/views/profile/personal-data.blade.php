@@ -446,6 +446,54 @@
         <div id="documents-tab" class="tab-content {{ $activeTab === 'documents' ? 'active' : '' }}">
             <!-- Form content directly -->
 
+                <!-- Document Approval Status -->
+                @if($customer && $customer->hasUploadedAllDocuments())
+                    <div style="margin-bottom: 24px; padding: 16px; border-radius: 8px; 
+                        @if($customer->documents_status === 'approved')
+                            background: #DCFCE7; border: 1px solid #86EFAC;
+                        @elseif($customer->documents_status === 'rejected')
+                            background: #FEE2E2; border: 1px solid #FCA5A5;
+                        @elseif($customer->documents_status === 'pending')
+                            background: #FEF3C7; border: 1px solid #FDE047;
+                        @else
+                            background: #F1F5F9; border: 1px solid #E2E8F0;
+                        @endif
+                    ">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                            @if($customer->documents_status === 'approved')
+                                <span style="font-size: 24px;">✅</span>
+                                <div>
+                                    <div style="font-weight: 700; color: #166534; font-size: 16px;">Documents Approved</div>
+                                    <div style="color: #166534; font-size: 14px;">Your documents have been verified and approved. You can now rent cars!</div>
+                                </div>
+                            @elseif($customer->documents_status === 'rejected')
+                                <span style="font-size: 24px;">❌</span>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 700; color: #991B1B; font-size: 16px;">Documents Rejected</div>
+                                    <div style="color: #991B1B; font-size: 14px;">Please re-upload your documents addressing the issues below:</div>
+                                    @if($customer->documents_rejection_reason)
+                                        <div style="margin-top: 8px; padding: 12px; background: white; border-radius: 6px; color: #7F1D1D; font-size: 13px;">
+                                            <strong>Reason:</strong> {{ $customer->documents_rejection_reason }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @elseif($customer->documents_status === 'pending')
+                                <span style="font-size: 24px;">⏳</span>
+                                <div>
+                                    <div style="font-weight: 700; color: #92400E; font-size: 16px;">Pending Review</div>
+                                    <div style="color: #92400E; font-size: 14px;">Your documents are being reviewed by our admin team. This usually takes 24-48 hours.</div>
+                                </div>
+                            @else
+                                <span style="font-size: 24px;">📄</span>
+                                <div>
+                                    <div style="font-weight: 700; color: #64748B; font-size: 16px;">Documents Uploaded</div>
+                                    <div style="color: #64748B; font-size: 14px;">Please submit your changes to request approval.</div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
                 <div class="form-fields">
                     <!-- IC/Passport -->
                     <div class="field-card">

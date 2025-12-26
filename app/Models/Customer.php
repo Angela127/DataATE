@@ -34,6 +34,10 @@ class Customer extends Model
         'identity_card_image',
         'matric_staff_image',
         'balance',
+        'documents_status',
+        'documents_rejection_reason',
+        'documents_submitted_at',
+        'documents_approved_at',
     ];
 
     /**
@@ -46,6 +50,8 @@ class Customer extends Model
         return [
             'license_expiry' => 'date',
             'balance' => 'decimal:2',
+            'documents_submitted_at' => 'datetime',
+            'documents_approved_at' => 'datetime',
         ];
     }
 
@@ -84,6 +90,32 @@ class Customer extends Model
     public function activeVouchers()
     {
         return $this->vouchers()->active();
+    }
+
+    /**
+     * Check if all required documents are uploaded.
+     */
+    public function hasUploadedAllDocuments(): bool
+    {
+        return !empty($this->license_image) 
+            && !empty($this->identity_card_image) 
+            && !empty($this->matric_staff_image);
+    }
+
+    /**
+     * Check if documents are approved.
+     */
+    public function isDocumentsApproved(): bool
+    {
+        return $this->documents_status === 'approved';
+    }
+
+    /**
+     * Check if customer can rent a car.
+     */
+    public function canRentCar(): bool
+    {
+        return $this->hasUploadedAllDocuments() && $this->isDocumentsApproved();
     }
 
     /**

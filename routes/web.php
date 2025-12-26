@@ -76,6 +76,11 @@ Route::middleware('auth')->group(function () {
         // Admin Loyalty Rules
         Route::get('/admin/loyalty/rules', [LoyaltyController::class, 'adminRules'])->name('admin.loyalty.rules');
         Route::post('/admin/loyalty/rules', [LoyaltyController::class, 'adminUpdateRules'])->name('admin.loyalty.rules.update');
+
+        // Admin Document Approvals
+        Route::get('/admin/document-approvals', [AdminController::class, 'documentApprovals'])->name('admin.document_approvals');
+        Route::post('/admin/documents/{customerId}/approve', [AdminController::class, 'approveDocuments'])->name('admin.documents.approve');
+        Route::post('/admin/documents/{customerId}/reject', [AdminController::class, 'rejectDocuments'])->name('admin.documents.reject');
     });
 
     

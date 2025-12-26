@@ -232,6 +232,13 @@ class ProfileController extends Controller
 
 
         $customer->fill($validated);
+        
+        // Check if all required documents are now uploaded
+        if ($customer->hasUploadedAllDocuments() && $customer->documents_status === null) {
+            $customer->documents_status = 'pending';
+            $customer->documents_submitted_at = now();
+        }
+        
         $customer->save();
 
         return back()->with('status', 'personal-data-updated');
