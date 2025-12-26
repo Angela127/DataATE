@@ -17,7 +17,10 @@ class AdminController extends Controller
         // Calculate functionality-wide totals
         $totalVouchers = Voucher::count();
         $totalRedeemed = Voucher::where('status', 'used')->count();
-        $totalExpired = Voucher::where('expiry_date', '<', now())->where('status', 'active')->count();
+        $totalExpired = Voucher::where('status', 'expired')
+                        ->orWhere(function ($q) {
+                            $q->where('status', 'active')->where('expiry_date', '<', now()->startOfDay());
+                        })->count();
 
         return view('admin.dashboard', compact(
             'totalVouchers', 
@@ -46,8 +49,10 @@ class AdminController extends Controller
         })->map(function ($group, $type) {
             $total = $group->count();
             $used = $group->where('status', 'used')->count();
-            // Expired: Check Date AND Active Status (as 'used' ones are not 'expired' in that sense)
-            $expired = $group->where('status', 'active')->where('expiry_date', '<', now())->count();
+            // Expired: Explicit 'expired' status OR 'active' but past date
+            $expired = $group->filter(function($v) {
+                return $v->status === 'expired' || ($v->status === 'active' && $v->expiry_date < now()->startOfDay());
+            })->count();
             
             // Calculate active rate (Active / Total)
             $activeCount = $total - $used - $expired;
@@ -62,7 +67,10 @@ class AdminController extends Controller
             ];
         })->values(); // Reset keys to array
 
-        return view('admin.voucher_stats', compact('voucherStats'));
+        // Fetch paginated individual vouchers for CRUD list
+        $allVouchers = Voucher::with('customer.user')->latest()->simplePaginate(15);
+
+        return view('admin.voucher_stats', compact('voucherStats', 'allVouchers'));
     }
 
     /**

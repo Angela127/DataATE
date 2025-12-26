@@ -35,8 +35,9 @@ class VoucherController extends Controller
 
         $currentLoyalty = $customer->currentLoyalty();
         $stamps = $currentLoyalty ? $currentLoyalty->rental_counter : 0;
+        $tiers = Loyalty::getRewardTiers();
 
-        return view('loyalty.redeem', compact('stamps'));
+        return view('loyalty.redeem', compact('stamps', 'tiers'));
     }
 
     // Process Redemption
@@ -55,22 +56,33 @@ class VoucherController extends Controller
             return redirect()->back()->with('error', 'Not enough stamps for this reward.');
         }
 
-        // Determine Reward
-        $discount = null;
-        $freeHours = null;
+        // Determine Reward from Dynamic Rules
+        $tiers = Loyalty::getRewardTiers();
+        
+        if (!isset($tiers[$tierCost])) {
+             return redirect()->back()->with('error', 'Invalid reward tier.');
+        }
+        
+        $rule = $tiers[$tierCost];
+        $discount = $rule['type'] === 'discount' ? $rule['amount'] : null;
+        $freeHours = $rule['type'] === 'free_hours' ? $rule['amount'] : null;
 
-        switch ($tierCost) {
-            case 3: $discount = 10; break;
-            case 6: $discount = 15; break;
-            case 9: $discount = 20; break;
-            case 12: $discount = 25; break;
-            case 15: $freeHours = 12; break;
+        // Auto-generate Description
+        $desc = "Reward Voucher";
+        if ($discount) {
+            if ($discount <= 10) $desc = "Bronze Saver - Enjoy {$discount}% off your next ride.";
+            elseif ($discount <= 15) $desc = "Silver Spark - {$discount}% discount for loyal travelers.";
+            elseif ($discount <= 20) $desc = "Gold Glider - {$discount}% off to smooth your journey.";
+            else $desc = "Platinum Prestige - {$discount}% discount, our premium thanks.";
+        } elseif ($freeHours) {
+             $desc = "Diamond Day - {$freeHours} Hours of free rental time.";
         }
 
         // 1. Create Voucher
         Voucher::create([
             'customer_id' => $customer->id,
             'voucher_code' => strtoupper(Str::random(8)),
+            'description' => $desc,
             'discount_percent' => $discount,
             'free_hours' => $freeHours,
             'expiry_date' => now()->addDays(30), // Valid for 30 days default
@@ -89,5 +101,88 @@ class VoucherController extends Controller
         ]);
 
         return redirect()->route('loyalty.index')->with('success', 'Voucher redeemed successfully! Check your Profile > My Vouchers.');
+    }
+
+    // --- Admin Voucher Management ---
+
+    /**
+     * Show form to create a new voucher (Admin).
+     */
+    public function adminCreate()
+    {
+        return view('admin.vouchers.create');
+    }
+
+    /**
+     * Store a new voucher (Admin).
+     */
+    public function adminStore(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email', // Identify user by email
+            'type' => 'required|in:discount,free_hours',
+            'amount' => 'required|integer|min:1',
+            'expiry_days' => 'required|integer|min:1',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        // Find customer
+        $user = \App\Models\User::where('email', $request->email)->first();
+        if (!$user || !$user->customer) {
+            return back()->withErrors(['email' => 'Customer profile not found for this user.']);
+        }
+
+        Voucher::create([
+            'customer_id' => $user->customer->id,
+            'voucher_code' => strtoupper(Str::random(8)),
+            'description' => $request->description,
+            'discount_percent' => $request->type === 'discount' ? $request->amount : null,
+            'free_hours' => $request->type === 'free_hours' ? $request->amount : null,
+            'expiry_date' => now()->addDays((int) $request->expiry_days),
+            'status' => 'active',
+        ]);
+
+        return redirect()->route('admin.voucher_stats')->with('success', 'Voucher created successfully.');
+    }
+
+    /**
+     * Show form to edit a voucher (Admin).
+     */
+    public function adminEdit($id)
+    {
+        $voucher = Voucher::findOrFail($id);
+        return view('admin.vouchers.edit', compact('voucher'));
+    }
+
+    /**
+     * Update a voucher (Admin).
+     */
+    public function adminUpdate(Request $request, $id)
+    {
+        $voucher = Voucher::findOrFail($id);
+        
+        $request->validate([
+            'status' => 'required|in:active,used,expired',
+            'expiry_date' => 'required|date',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $voucher->update([
+            'status' => $request->status,
+            'expiry_date' => $request->expiry_date,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('admin.voucher_stats')->with('success', 'Voucher updated.');
+    }
+
+    /**
+     * Delete a voucher (Admin).
+     */
+    public function adminDestroy($id)
+    {
+        $voucher = Voucher::findOrFail($id);
+        $voucher->delete();
+        return back()->with('success', 'Voucher deleted.');
     }
 }

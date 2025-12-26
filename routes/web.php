@@ -65,6 +65,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
         Route::get('/admin/voucher-stats', [AdminController::class, 'voucherStats'])->name('admin.voucher_stats');
         Route::get('/admin/customer-loyalty', [AdminController::class, 'customerLoyalty'])->name('admin.customer_loyalty');
+
+        // Admin Voucher CRUD
+        Route::get('/admin/vouchers/create', [VoucherController::class, 'adminCreate'])->name('admin.vouchers.create');
+        Route::post('/admin/vouchers', [VoucherController::class, 'adminStore'])->name('admin.vouchers.store');
+        Route::get('/admin/vouchers/{id}/edit', [VoucherController::class, 'adminEdit'])->name('admin.vouchers.edit');
+        Route::put('/admin/vouchers/{id}', [VoucherController::class, 'adminUpdate'])->name('admin.vouchers.update');
+        Route::delete('/admin/vouchers/{id}', [VoucherController::class, 'adminDestroy'])->name('admin.vouchers.destroy');
+
+        // Admin Loyalty Rules
+        Route::get('/admin/loyalty/rules', [LoyaltyController::class, 'adminRules'])->name('admin.loyalty.rules');
+        Route::post('/admin/loyalty/rules', [LoyaltyController::class, 'adminUpdateRules'])->name('admin.loyalty.rules.update');
     });
 
     

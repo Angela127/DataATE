@@ -64,6 +64,7 @@
                                         12 Hours Free
                                     @endif
                                 </div>
+                                <div style="font-size: 11px; color: #666; margin-bottom: 6px;">{{ $voucher->description ?? 'Special reward for you!' }}</div>
                                 <div class="voucher-divider"></div>
                                 <div class="voucher-desc">
                                     Code: <strong>{{ $voucher->voucher_code }}</strong><br>
@@ -103,6 +104,7 @@
                                     12 Hours Free
                                 @endif
                             </div>
+                            <div style="font-size: 11px; color: #888; margin-bottom: 6px;">{{ $voucher->description ?? 'Special reward.' }}</div>
                             <div class="voucher-divider"></div>
                             <div class="voucher-desc">
                                 Code: {{ $voucher->voucher_code }}<br>

@@ -14,6 +14,7 @@ class Voucher extends Model
     protected $fillable = [
         'customer_id',
         'voucher_code',
+        'description',
         'discount_percent',
         'free_hours',
         'expiry_date',
@@ -37,7 +38,9 @@ class Voucher extends Model
 
     public function scopePast(Builder $query): void
     {
-        $query->where('status', '!=', 'active')
-              ->orWhere('expiry_date', '<', now());
+        $query->where(function ($q) {
+            $q->where('status', '!=', 'active')
+              ->orWhere('expiry_date', '<', now()->startOfDay());
+        });
     }
 }

@@ -7,6 +7,7 @@
     <div class="sub-nav">
         <a href="{{ route('admin.voucher_stats') }}">Voucher Stats</a>
         <a href="{{ route('admin.customer_loyalty') }}" class="active">Customer Loyalty</a>
+        <a href="{{ route('admin.loyalty.rules') }}" style="background: #F1F5F9; color: #475569; margin-left: 12px; border: 1px solid #E2E8F0;">⚙️ Rules</a>
     </div>
 </div>
 

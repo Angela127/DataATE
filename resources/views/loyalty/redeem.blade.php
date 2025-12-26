@@ -59,101 +59,29 @@
                 @csrf
                 <input type="hidden" name="tier" id="tierInput">
                 <div class="vouchers-list">
-                    
-                    <!-- Tier 1 -->
-                    <div class="voucher-card {{ $stamps >= 0 ? '' : 'selected' }}"> <!-- Always show as valid card style, button handles disabled state -->
-                        <div class="voucher-left">
-                            <span class="voucher-value-text">10%</span>
-                        </div>
-                        <div class="voucher-right">
-                            <div class="voucher-info">
-                                <div class="voucher-title">10% Off</div>
-                                <div class="voucher-divider"></div>
-                                <div class="voucher-desc">Cost: <strong>3 Stamps</strong></div>
-                            </div>
-                            <button type="button" class="redeem-btn {{ $stamps >= 3 ? 'active' : 'disabled' }}" 
-                                onclick="{{ $stamps >= 3 ? 'submitRedeem(3)' : '' }}" 
-                                {{ $stamps < 3 ? 'disabled' : '' }}>
-                                Redeem
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Tier 2 -->
+                    @foreach($tiers as $cost => $rule)
                     <div class="voucher-card">
-                        <div class="voucher-left">
-                            <span class="voucher-value-text">15%</span>
+                        <div class="voucher-left" style="{{ $rule['type'] === 'free_hours' ? 'background: #dbeafe;' : '' }}">
+                            <span class="voucher-value-text" style="{{ $rule['type'] === 'free_hours' ? 'color: #1e40af;' : '' }}">
+                                {{ $rule['type'] === 'discount' ? $rule['amount'].'%' : 'FREE' }}
+                            </span>
                         </div>
                         <div class="voucher-right">
                             <div class="voucher-info">
-                                <div class="voucher-title">15% Off</div>
+                                <div class="voucher-title">
+                                    {{ $rule['type'] === 'discount' ? $rule['amount'].'% Off' : $rule['amount'].' Hours Free' }}
+                                </div>
                                 <div class="voucher-divider"></div>
-                                <div class="voucher-desc">Cost: <strong>6 Stamps</strong></div>
+                                <div class="voucher-desc">Cost: <strong>{{ $cost }} Stamps</strong></div>
                             </div>
-                            <button type="button" class="redeem-btn {{ $stamps >= 6 ? 'active' : 'disabled' }}" 
-                                onclick="{{ $stamps >= 6 ? 'submitRedeem(6)' : '' }}" 
-                                {{ $stamps < 6 ? 'disabled' : '' }}>
+                            <button type="button" class="redeem-btn {{ $stamps >= $cost ? 'active' : 'disabled' }}" 
+                                onclick="{{ $stamps >= $cost ? 'submitRedeem('.$cost.')' : '' }}" 
+                                {{ $stamps < $cost ? 'disabled' : '' }}>
                                 Redeem
                             </button>
                         </div>
                     </div>
-
-                    <!-- Tier 3 -->
-                    <div class="voucher-card">
-                        <div class="voucher-left">
-                            <span class="voucher-value-text">20%</span>
-                        </div>
-                        <div class="voucher-right">
-                            <div class="voucher-info">
-                                <div class="voucher-title">20% Off</div>
-                                <div class="voucher-divider"></div>
-                                <div class="voucher-desc">Cost: <strong>9 Stamps</strong></div>
-                            </div>
-                            <button type="button" class="redeem-btn {{ $stamps >= 9 ? 'active' : 'disabled' }}" 
-                                onclick="{{ $stamps >= 9 ? 'submitRedeem(9)' : '' }}" 
-                                {{ $stamps < 9 ? 'disabled' : '' }}>
-                                Redeem
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Tier 4 -->
-                    <div class="voucher-card">
-                        <div class="voucher-left">
-                            <span class="voucher-value-text">25%</span>
-                        </div>
-                        <div class="voucher-right">
-                            <div class="voucher-info">
-                                <div class="voucher-title">25% Off</div>
-                                <div class="voucher-divider"></div>
-                                <div class="voucher-desc">Cost: <strong>12 Stamps</strong></div>
-                            </div>
-                            <button type="button" class="redeem-btn {{ $stamps >= 12 ? 'active' : 'disabled' }}" 
-                                onclick="{{ $stamps >= 12 ? 'submitRedeem(12)' : '' }}" 
-                                {{ $stamps < 12 ? 'disabled' : '' }}>
-                                Redeem
-                            </button>
-                        </div>
-                    </div>
-                     <!-- Tier 5 -->
-                     <div class="voucher-card">
-                        <div class="voucher-left" style="background: #dbeafe;">
-                            <span class="voucher-value-text" style="color: #1e40af;">FREE</span>
-                        </div>
-                        <div class="voucher-right">
-                            <div class="voucher-info">
-                                <div class="voucher-title">12 Hours Free</div>
-                                <div class="voucher-divider"></div>
-                                <div class="voucher-desc">Cost: <strong>15 Stamps</strong></div>
-                            </div>
-                            <button type="button" class="redeem-btn {{ $stamps >= 15 ? 'active' : 'disabled' }}" 
-                                onclick="{{ $stamps >= 15 ? 'submitRedeem(15)' : '' }}" 
-                                {{ $stamps < 15 ? 'disabled' : '' }}>
-                                Redeem
-                            </button>
-                        </div>
-                    </div>
-
+                    @endforeach
                 </div>
             </form>
         </div>

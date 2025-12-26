@@ -67,4 +67,43 @@ class LoyaltyController extends Controller
 
         return redirect()->back()->with('success', 'Voucher redeemed successfully!');
     }
+
+    // --- Admin Rules Management ---
+
+    /**
+     * Show Loyalty Rules Edit Page.
+     */
+    public function adminRules()
+    {
+        $tiers = Loyalty::getRewardTiers();
+        return view('admin.loyalty.rules', compact('tiers'));
+    }
+
+    /**
+     * Update Loyalty Rules.
+     */
+    public function adminUpdateRules(Request $request)
+    {
+        $data = $request->validate([
+            'rules' => 'required|array',
+            'rules.*.stamps' => 'required|integer|min:1|distinct',
+            'rules.*.type' => 'required|in:discount,free_hours',
+            'rules.*.amount' => 'required|integer|min:1',
+        ]);
+
+        $newTiers = [];
+        foreach ($data['rules'] as $rule) {
+            $newTiers[$rule['stamps']] = [
+                'type' => $rule['type'],
+                'amount' => $rule['amount']
+            ];
+        }
+
+        // Sort by stamps (asc)
+        ksort($newTiers);
+
+        Loyalty::saveRewardTiers($newTiers);
+
+        return redirect()->route('admin.customer_loyalty')->with('success', 'Loyalty rules updated successfully.');
+    }
 }
