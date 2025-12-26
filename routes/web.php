@@ -68,8 +68,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('checkAdmin')->group(function () {
         Route::get('/booking', [RentalController::class, 'index'])->name('booking.index');
         Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-        Route::get('/admin/voucher-stats', [AdminController::class, 'voucherStats'])->name('admin.voucher_stats');
-        Route::get('/admin/customer-loyalty', [AdminController::class, 'customerLoyalty'])->name('admin.customer_loyalty');
+        Route::get('/admin/vouchers', [AdminController::class, 'voucherStats'])->name('admin.vouchers.index');
+        Route::get('/admin/loyalty', [AdminController::class, 'customerLoyalty'])->name('admin.loyalty.index');
 
         // Admin Voucher CRUD
         Route::get('/admin/vouchers/create', [VoucherController::class, 'adminCreate'])->name('admin.vouchers.create');

@@ -240,7 +240,6 @@
                                 <span class="badge-status badge-unavailable">Not Avail.</span>
                             @endif
                         </td>
-<<<<<<< Updated upstream
                         <td class="actions-col">
                             <div class="actions-wrapper">
                                 <a href="{{ route('admin.cars.edit', $car->plate_no) }}">
@@ -257,23 +256,6 @@
                                     </button>
                                 </form>
                             </div>
-=======
-                        <td style="text-align:right;">
-                            <a href="{{ route('admin.cars.edit', $car->plate_no) }}">
-                                <button type="button" class="btn-table btn-table-edit" style="text-decoration: none;">Edit</button>
-                            </a>
-
-                            <form action="{{ route('admin.cars.destroy', $car->plate_no) }}"
-                                  method="POST"
-                                  style="display:inline-block"
-                                  onsubmit="return confirm('Delete this car?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-table btn-table-delete" style="text-decoration: none;">
-                                    Delete
-                                </button>
-                            </form>
->>>>>>> Stashed changes
                         </td>
                     </tr>
                 @empty

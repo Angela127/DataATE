@@ -25,8 +25,8 @@
         <div class="fleet-title">Customer Loyalty Program</div>
         <div class="fleet-toolbar">
             <div class="sub-nav" style="margin-bottom: 0;">
-                <a href="{{ route('admin.voucher_stats') }}">Voucher Stats</a>
-                <a href="{{ route('admin.customer_loyalty') }}" class="active">Customer Loyalty</a>
+                <a href="{{ route('admin.vouchers.index') }}">Voucher Stats</a>
+                <a href="{{ route('admin.loyalty.index') }}" class="active">Customer Loyalty</a>
                 <a href="{{ route('admin.loyalty.rules') }}">Rules</a>
             </div>
         </div>

@@ -82,7 +82,7 @@ class AdminController extends Controller
         // Fetch paginated individual vouchers for CRUD list
         $allVouchers = Voucher::with('customer.user')->latest()->simplePaginate(15);
 
-        return view('admin.voucher_stats', compact('voucherStats', 'allVouchers'));
+        return view('admin.vouchers.index', compact('voucherStats', 'allVouchers'));
     }
 
     /**
@@ -128,7 +128,7 @@ class AdminController extends Controller
                 ];
             });
 
-        return view('admin.customer_loyalty', compact('customers'));
+        return view('admin.loyalty.index', compact('customers'));
     }
 
     /**

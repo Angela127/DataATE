@@ -27,7 +27,7 @@
             <div class="fleet-page-title">Edit Voucher</div>
             <div class="fleet-page-subtitle">Update voucher details for {{ $voucher->voucher_code }}.</div>
         </div>
-        <a href="{{ route('admin.voucher_stats') }}" class="btn-back">
+        <a href="{{ route('admin.vouchers.index') }}" class="btn-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="15 18 9 12 15 6"></polyline>
             </svg>

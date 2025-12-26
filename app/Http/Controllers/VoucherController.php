@@ -142,7 +142,7 @@ class VoucherController extends Controller
             'status' => 'active',
         ]);
 
-        return redirect()->route('admin.voucher_stats')->with('success', 'Voucher created successfully.');
+        return redirect()->route('admin.vouchers.index')->with('success', 'Voucher created successfully.');
     }
 
     /**
@@ -173,7 +173,7 @@ class VoucherController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->route('admin.voucher_stats')->with('success', 'Voucher updated.');
+        return redirect()->route('admin.vouchers.index')->with('success', 'Voucher updated.');
     }
 
     /**
