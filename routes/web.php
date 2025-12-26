@@ -9,8 +9,13 @@ use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminCarController;
+use App\Http\Controllers\CustomerCarController;
 
 Route::get('/', [HomeController::class, 'index'])->name('mainpage');
+
+Route::get('/cars', [CustomerCarController::class, 'index'])->name('cars.index');
+Route::get('/cars/{plate_no}', [CustomerCarController::class, 'show'])->name('cars.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
@@ -81,9 +86,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/document-approvals', [AdminController::class, 'documentApprovals'])->name('admin.document_approvals');
         Route::post('/admin/documents/{customerId}/approve', [AdminController::class, 'approveDocuments'])->name('admin.documents.approve');
         Route::post('/admin/documents/{customerId}/reject', [AdminController::class, 'rejectDocuments'])->name('admin.documents.reject');
+
+        // Admin Car Management
+        Route::get('/admin/cars', [AdminCarController::class, 'index'])->name('admin.cars.index');
+        Route::get('/admin/cars/create', [AdminCarController::class, 'create'])->name('admin.cars.create');
+        Route::post('/admin/cars', [AdminCarController::class, 'store'])->name('admin.cars.store');
+        Route::get('/admin/cars/{plate_no}/edit', [AdminCarController::class, 'edit'])->name('admin.cars.edit');
+        Route::put('/admin/cars/{plate_no}', [AdminCarController::class, 'update'])->name('admin.cars.update');
+        Route::delete('/admin/cars/{plate_no}', [AdminCarController::class, 'destroy'])->name('admin.cars.destroy');
     });
 
-    
 });
 
 require __DIR__.'/auth.php';

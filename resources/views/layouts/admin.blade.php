@@ -141,8 +141,10 @@
                     Booking
                 </a>
             </li>
+            
+            <!-- Fleet Management Section -->
             <li class="nav-item">
-                <a href="#">
+                <a href="{{ route('admin.cars.index') }}" class="{{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="1" y="3" width="15" height="13"></rect>
                         <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>

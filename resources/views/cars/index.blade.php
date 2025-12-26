@@ -111,6 +111,7 @@
                 }
             @endphp
 
+
             <div class="car-card {{ $isAvailable ? '' : 'unavailable' }}" data-car-name="{{ $car->model }}">
                 <div class="car-image">
                     <img src="{{ $imageUrl }}" alt="{{ $car->model }}" loading="lazy">
