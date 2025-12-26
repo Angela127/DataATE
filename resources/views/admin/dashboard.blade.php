@@ -6,7 +6,7 @@
 </div>
 
 <div class="dashboard-content">
-    <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 24px; color: #1E293B;">Overview</h2>
+    <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 24px; color: #1E293B;">Voucher Overview</h2>
     
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
         <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #E2E8F0;">
@@ -24,7 +24,13 @@
             <div style="color: #64748B; font-size: 14px; font-weight: 500;">Expired Vouchers</div>
         </div>
 
-        <a href="{{ route('admin.document_approvals', ['status' => 'pending']) }}" style="text-decoration: none;">
+        
+    </div>
+</div>
+
+<div class="dashboard-content">
+    <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 24px; color: #1E293B;">Customer Overview</h2>
+    <a href="{{ route('admin.document_approvals', ['status' => 'pending']) }}" style="text-decoration: none;">
             <div style="background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #E2E8F0; transition: all 0.2s; cursor: pointer;" 
                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 12px -2px rgba(0, 0, 0, 0.15)';" 
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';">
@@ -32,6 +38,5 @@
                 <div style="color: #64748B; font-size: 14px; font-weight: 500;">Pending Documents</div>
             </div>
         </a>
-    </div>
 </div>
 @endsection

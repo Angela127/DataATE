@@ -121,22 +121,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    Customers
-                </a>
-            </li>
-            <li class="nav-item">
                 <a href="{{ route('admin.document_approvals') }}" class="{{ request()->routeIs('admin.document_approvals') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
                         <path d="M9 15l2 2 4-4"></path>
                     </svg>
-                    Document Approvals
+                    Customers
                 </a>
             </li>
             <li class="nav-item">

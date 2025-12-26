@@ -146,7 +146,7 @@ class AdminController extends Controller
         $approvedCount = Customer::where('documents_status', 'approved')->count();
         $rejectedCount = Customer::where('documents_status', 'rejected')->count();
 
-        return view('admin.document_approvals', compact('customers', 'status', 'pendingCount', 'approvedCount', 'rejectedCount'));
+        return view('admin.approve.document_approvals', compact('customers', 'status', 'pendingCount', 'approvedCount', 'rejectedCount'));
     }
 
     /**
