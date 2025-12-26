@@ -287,7 +287,50 @@
             </div>
             <script
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6G0oqiCvdkEPLPmtqJcTHjxsZCPF8aOM&libraries=places"></script>
-            <script src="{{ asset('js/booking_calendar.js') }}"></script>
+            <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const params = new URLSearchParams(window.location.search);
+
+    const carSelect = document.getElementById('carSelect');
+    const pickupInput = document.getElementById('pickupLocation');
+    const returnInput = document.getElementById('returnLocation');
+    const destinationInput = document.getElementById('destination');
+
+    const pickupLat = document.getElementById('pickup_lat');
+    const pickupLng = document.getElementById('pickup_lng');
+    const returnLat = document.getElementById('return_lat');
+    const returnLng = document.getElementById('return_lng');
+    const destLat = document.getElementById('destination_lat');
+    const destLng = document.getElementById('destination_lng');
+
+    if (params.has('car') && carSelect) {
+        carSelect.value = params.get('car');
+    }
+
+    if (params.has('Pickup') && pickupInput) {
+        pickupInput.value = params.get('Pickup');
+    }
+
+    if (params.has('Return') && returnInput) {
+        returnInput.value = params.get('Return');
+    }
+
+    if (params.has('destination') && destinationInput) {
+        destinationInput.value = params.get('destination');
+    }
+
+    if (params.has('pickup_lat') && pickupLat) pickupLat.value = params.get('pickup_lat');
+    if (params.has('pickup_lng') && pickupLng) pickupLng.value = params.get('pickup_lng');
+    if (params.has('return_lat') && returnLat) returnLat.value = params.get('return_lat');
+    if (params.has('return_lng') && returnLng) returnLng.value = params.get('return_lng');
+    if (params.has('destination_lat') && destLat) destLat.value = params.get('destination_lat');
+    if (params.has('destination_lng') && destLng) destLng.value = params.get('destination_lng');
+
+    console.log('✅ Restored booking data:', Object.fromEntries(params));
+});
+</script>
+
+                <script src="{{ asset('js/booking_calendar.js') }}"></script>
 
             <!-- Map Modal -->
             <div id="mapModal" class="map-modal">

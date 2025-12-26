@@ -324,5 +324,83 @@ class RentalController extends Controller
     {
         $rentals = Rental::with('user', 'car')->latest()->get();
         return view('admin.booking.index', compact('rentals'));
+    
+
+    // Calculate prices
+    $depositAmount = 50;
+    $bookingPrice = 0;
+    if ($car && $bookingHours > 0) {
+        $bookingPrice = $car->price_hour * $bookingHours;
+    } else {
+        $bookingPrice = (float) $request->query('price', 0);
     }
+
+    // Apply Voucher Logic
+    $voucherCode = $request->query('voucher_code');
+    $discountAmount = 0;
+    $appliedVoucher = null;
+
+    if ($voucherCode) {
+        \Log::info('Voucher Code Received: ' . $voucherCode);
+        $user = \Illuminate\Support\Facades\Auth::user();
+        
+        if ($user && $user->customer) {
+            $appliedVoucher = $user->customer->vouchers()
+                ->where('voucher_code', $voucherCode)
+                ->active()
+                ->first();
+
+            if ($appliedVoucher) {
+                \Log::info('Voucher Found: ', $appliedVoucher->toArray());
+                if ($appliedVoucher->discount_percent) {
+                    $discountAmount = $bookingPrice * ($appliedVoucher->discount_percent / 100);
+                } elseif ($appliedVoucher->free_hours) {
+                    $freeHoursValue = $car->price_hour * $appliedVoucher->free_hours;
+                    $discountAmount = min($bookingPrice, $freeHoursValue);
+                }
+                \Log::info('Discount Calculated: ' . $discountAmount);
+            } else {
+                \Log::info('Voucher Not Found or Inactive for User: ' . $user->id); 
+            }
+        } else {
+            \Log::info('User not authenticated or no customer profile');
+        }
+    }
+
+    $grandTotal = $depositAmount + $bookingPrice + (float) $request->query('addons', 0) - $discountAmount;
+
+    // BUILD THE BOOKING DETAILS ARRAY ONCE - WITH ALL DATA INCLUDING COORDINATES
+    $bookingDetails = [
+        // Basic booking info
+        'car' => $plate_no,
+        'destination' => $request->query('destination', ''),
+        'pickup_location' => $request->query('Pickup', 'Student Mall'),
+        'return_location' => $request->query('Return', 'Student Mall'),
+        'start_time' => $start_time ? Carbon::parse($start_time)->format('Y-m-d H:i:s') : now()->format('Y-m-d H:i:s'),
+        'end_time' => $end_time ? Carbon::parse($end_time)->format('Y-m-d H:i:s') : now()->addDays(3)->format('Y-m-d H:i:s'),
+        'booking_hours' => $bookingHours,
+        
+        // Price info
+        'price' => $bookingPrice,
+        'deposit' => $depositAmount,
+        'addons' => (float) $request->query('addons', 0),
+        'discount' => $discountAmount,
+        'voucher_code' => $appliedVoucher ? $appliedVoucher->voucher_code : null,
+        'total' => $grandTotal,
+        
+        // COORDINATES - THIS WAS MISSING!
+        'pickup_lat' => $request->query('pickup_lat', '1.558557'),
+        'pickup_lng' => $request->query('pickup_lng', '103.636647'),
+        'return_lat' => $request->query('return_lat', '1.558557'),
+        'return_lng' => $request->query('return_lng', '103.636647'),
+        'destination_lat' => $request->query('destination_lat', ''),
+        'destination_lng' => $request->query('destination_lng', ''),
+    ];
+
+    // Debug: Log the received data
+    \Log::info('Confirm Booking Data:', $bookingDetails);
+
+    // Return confirm booking view with data
+    return view('booking.confirm', compact('car', 'bookingDetails'));
+}
 }
