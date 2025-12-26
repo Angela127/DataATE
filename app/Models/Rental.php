@@ -36,5 +36,6 @@ class Rental extends Model
         'pickup_lat', 'pickup_lng',
         'destination_lat', 'destination_lng',
         'return_lat', 'return_lng',
+        
     ];
 }

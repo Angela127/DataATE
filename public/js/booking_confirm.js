@@ -1,7 +1,16 @@
 // Booking Confirmation JavaScript
 
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('=== CONFIRM PAGE LOADED ===');
     initializePaymentOptions();
+    
+    // Calculate surcharge after page loads
+    setTimeout(() => {
+        const surcharge = calculateLocationSurcharge();
+        if (surcharge > 0) {
+            showNotification(`Additional location charge: RM${surcharge.toFixed(2)}`, 'info');
+        }
+    }, 100);
 });
 
 // Initialize payment options
@@ -12,9 +21,7 @@ function initializePaymentOptions() {
         const input = option.querySelector('input[type="radio"]');
 
         option.addEventListener('click', function () {
-            // Remove selected from all
             options.forEach(opt => opt.classList.remove('selected'));
-            // Add selected to clicked one
             this.classList.add('selected');
             input.checked = true;
         });
@@ -26,9 +33,101 @@ function goBack() {
     window.history.back();
 }
 
-// Edit booking - go back to calendar
+// Edit booking - go back to calendar with all parameters
 function editBooking() {
-    window.location.href = '/booking/calendar';
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    const params = new URLSearchParams({
+        car: urlParams.get('car') || '',
+        destination: urlParams.get('destination') || '',
+        Pickup: urlParams.get('Pickup') || '',
+        Return: urlParams.get('Return') || '',
+        start_time: urlParams.get('start_time') || '',
+        end_time: urlParams.get('end_time') || '',
+        pickup_lat: urlParams.get('pickup_lat') || '',
+        pickup_lng: urlParams.get('pickup_lng') || '',
+        return_lat: urlParams.get('return_lat') || '',
+        return_lng: urlParams.get('return_lng') || '',
+        destination_lat: urlParams.get('destination_lat') || '',
+        destination_lng: urlParams.get('destination_lng') || ''
+    });
+    
+    // Remove empty parameters
+    for (let [key, value] of [...params.entries()]) {
+        if (!value) {
+            params.delete(key);
+        }
+    }
+    
+    console.log('Editing with params:', Object.fromEntries(params));
+    window.location.href = '/booking/calendar?' + params.toString();
+}
+
+// Calculate location surcharge and update total
+function calculateLocationSurcharge() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    const pickup = (urlParams.get('Pickup') || '').toLowerCase().trim();
+    const dropoff = (urlParams.get('Return') || '').toLowerCase().trim();
+    
+    console.log('=== CALCULATING SURCHARGE ===');
+    console.log('Pickup:', pickup);
+    console.log('Return:', dropoff);
+    
+    let surcharge = 0;
+    
+    // Check pickup location
+    if (pickup && pickup !== 'student mall') {
+        surcharge += 10;
+        console.log('Pickup surcharge: +RM10');
+    }
+    
+    // Check return location
+    if (dropoff && dropoff !== 'student mall') {
+        surcharge += 10;
+        console.log('Return surcharge: +RM10');
+    }
+    
+    console.log('Total surcharge: RM' + surcharge);
+    
+    // Get current prices from data attributes
+    const bookingPriceEl = document.getElementById('bookingPrice');
+    const depositEl = document.getElementById('depositAmount');
+    
+    if (!bookingPriceEl || !depositEl) {
+        console.error('Price elements not found!');
+        return surcharge;
+    }
+    
+    const bookingPrice = parseFloat(bookingPriceEl.dataset.value) || 0;
+    const deposit = parseFloat(depositEl.dataset.value) || 0;
+    
+    console.log('Booking Price:', bookingPrice);
+    console.log('Deposit:', deposit);
+    
+    // Update Add-ons field
+    const addonsEl = document.getElementById('addonsAmount');
+    if (addonsEl) {
+        addonsEl.textContent = 'RM' + surcharge.toFixed(2);
+        console.log('✓ Add-ons updated to: RM' + surcharge.toFixed(2));
+    } else {
+        console.error('Add-ons element not found!');
+    }
+    
+    // Calculate new total
+    const newTotal = bookingPrice + deposit + surcharge;
+    console.log('Calculation: ' + bookingPrice + ' + ' + deposit + ' + ' + surcharge + ' = ' + newTotal);
+    
+    // Update Total field
+    const totalEl = document.getElementById('totalAmount');
+    if (totalEl) {
+        totalEl.textContent = 'RM' + newTotal.toFixed(2);
+        console.log('✓ Total updated to: RM' + newTotal.toFixed(2));
+    } else {
+        console.error('Total element not found!');
+    }
+    
+    return surcharge;
 }
 
 function proceedToPayment() {
@@ -41,7 +140,6 @@ function proceedToPayment() {
 
 // Show notification
 function showNotification(message, type = 'info') {
-    // Remove existing notifications
     const existingNotification = document.querySelector('.notification');
     if (existingNotification) {
         existingNotification.remove();

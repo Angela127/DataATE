@@ -135,107 +135,104 @@ class RentalController extends Controller
         $plate_no = $request->query('car');
         $car = \App\Models\Car::where('plate_no', $plate_no)->first();
 
-        // Get booking details from query parameters
-        $start_time = $request->query('start_time');
-        $end_time = $request->query('end_time');
-
-        // Calculate hours from the provided times or use passed hours
-        $bookingHours = (int) $request->query('hours', 0);
-
-        if ($start_time && $end_time && $bookingHours == 0) {
-            try {
-                $start = Carbon::parse($start_time);
-                $end = Carbon::parse($end_time);
-
-                $bookingHours = $start->diffInHours($end, false); // false means don't use absolute value
-
-                // If negative or zero, something is wrong
-                if ($bookingHours <= 0) {
-                    $bookingHours = (int) $request->query('hours', 0);
-                }
-            } catch (\Exception $e) {
-                // If parsing fails, use the hours parameter
+    // Get booking details from query parameters
+    $start_time = $request->query('start_time');
+    $end_time = $request->query('end_time');
+    
+    // Calculate hours from the provided times or use passed hours
+    $bookingHours = (int) $request->query('hours', 0);
+    
+    if ($start_time && $end_time && $bookingHours == 0) {
+        try {
+            $start = Carbon::parse($start_time);
+            $end = Carbon::parse($end_time);
+            $bookingHours = $start->diffInHours($end, false);
+            
+            if ($bookingHours <= 0) {
                 $bookingHours = (int) $request->query('hours', 0);
             }
+        } catch (\Exception $e) {
+            $bookingHours = (int) $request->query('hours', 0);
         }
-
-        // Calculate prices
-        $depositAmount = 50;
-        $bookingPrice = 0;
-        if ($car && $bookingHours > 0) {
-            $bookingPrice = $car->price_hour * $bookingHours;
-        } else {
-            $bookingPrice = (float) $request->query('price', 0);
-        }
-
-        // Apply Voucher Logic
-        $voucherCode = $request->query('voucher_code');
-        $discountAmount = 0;
-        $appliedVoucher = null;
-
-        if ($voucherCode) {
-            \Log::info('Voucher Code Received: ' . $voucherCode); // Debug
-            $user = \Illuminate\Support\Facades\Auth::user();
-            
-            if ($user && $user->customer) {
-                $appliedVoucher = $user->customer->vouchers()
-                    ->where('voucher_code', $voucherCode)
-                    ->active()
-                    ->first();
-
-                if ($appliedVoucher) {
-                    \Log::info('Voucher Found: ', $appliedVoucher->toArray()); // Debug
-                    if ($appliedVoucher->discount_percent) {
-                        $discountAmount = $bookingPrice * ($appliedVoucher->discount_percent / 100);
-                    } elseif ($appliedVoucher->free_hours) {
-                        // Calculate free hours value
-                        $freeHoursValue = $car->price_hour * $appliedVoucher->free_hours;
-                        // Cap at booking price (can't go below 0 for booking price)
-                        $discountAmount = min($bookingPrice, $freeHoursValue);
-                    }
-                    \Log::info('Discount Calculated: ' . $discountAmount); // Debug
-                } else {
-                    \Log::info('Voucher Not Found or Inactive for User: ' . $user->id); 
-                }
-            } else {
-                 \Log::info('User not authenticated or no customer profile');
-            }
-        }
-
-        $grandTotal = $depositAmount + $bookingPrice + (float) $request->query('addons', 0) - $discountAmount;
-
-        $bookingDetails = [
-            'car' => $plate_no,
-            'destination' => $request->query('destination', 'null'),
-            'pickup_location' => $request->query('Pickup', 'Student Mall'),
-            'return_location' => $request->query('Return', 'Student Mall'),
-            'start_time' => $start_time ? Carbon::parse($start_time)->format('Y-m-d H:i:s') : now()->format('Y-m-d H:i:s'),
-            'end_time' => $end_time ? Carbon::parse($end_time)->format('Y-m-d H:i:s') : now()->addDays(3)->format('Y-m-d H:i:s'),
-            'booking_hours' => $bookingHours,
-            'price' => $bookingPrice,
-            'deposit' => $depositAmount,
-            'addons' => (float) $request->query('addons', 0),
-            'discount' => $discountAmount,
-            'voucher_code' => $appliedVoucher ? $appliedVoucher->voucher_code : null,
-            'total' => $grandTotal,
-        ];
-
-        // Debug: Log the received data (remove in production)
-        \Log::info('Confirm Booking Data:', [
-            'car' => $plate_no,
-            'start_time' => $start_time,
-            'end_time' => $end_time,
-            'hours' => $bookingHours,
-            'pickup' => $request->query('Pickup'),
-            'return' => $request->query('Return'),
-            'destination' => $request->query('destination'),
-            'voucher' => $voucherCode,
-            'discount' => $discountAmount
-        ]);
-
-        // Return confirm booking view with data
-        return view('booking.confirm', compact('car', 'bookingDetails'));
     }
+
+    // Calculate prices
+    $depositAmount = 50;
+    $bookingPrice = 0;
+    if ($car && $bookingHours > 0) {
+        $bookingPrice = $car->price_hour * $bookingHours;
+    } else {
+        $bookingPrice = (float) $request->query('price', 0);
+    }
+
+    // Apply Voucher Logic
+    $voucherCode = $request->query('voucher_code');
+    $discountAmount = 0;
+    $appliedVoucher = null;
+
+    if ($voucherCode) {
+        \Log::info('Voucher Code Received: ' . $voucherCode);
+        $user = \Illuminate\Support\Facades\Auth::user();
+        
+        if ($user && $user->customer) {
+            $appliedVoucher = $user->customer->vouchers()
+                ->where('voucher_code', $voucherCode)
+                ->active()
+                ->first();
+
+            if ($appliedVoucher) {
+                \Log::info('Voucher Found: ', $appliedVoucher->toArray());
+                if ($appliedVoucher->discount_percent) {
+                    $discountAmount = $bookingPrice * ($appliedVoucher->discount_percent / 100);
+                } elseif ($appliedVoucher->free_hours) {
+                    $freeHoursValue = $car->price_hour * $appliedVoucher->free_hours;
+                    $discountAmount = min($bookingPrice, $freeHoursValue);
+                }
+                \Log::info('Discount Calculated: ' . $discountAmount);
+            } else {
+                \Log::info('Voucher Not Found or Inactive for User: ' . $user->id); 
+            }
+        } else {
+            \Log::info('User not authenticated or no customer profile');
+        }
+    }
+
+    $grandTotal = $depositAmount + $bookingPrice + (float) $request->query('addons', 0) - $discountAmount;
+
+    // BUILD THE BOOKING DETAILS ARRAY ONCE - WITH ALL DATA INCLUDING COORDINATES
+    $bookingDetails = [
+        // Basic booking info
+        'car' => $plate_no,
+        'destination' => $request->query('destination', ''),
+        'pickup_location' => $request->query('Pickup', 'Student Mall'),
+        'return_location' => $request->query('Return', 'Student Mall'),
+        'start_time' => $start_time ? Carbon::parse($start_time)->format('Y-m-d H:i:s') : now()->format('Y-m-d H:i:s'),
+        'end_time' => $end_time ? Carbon::parse($end_time)->format('Y-m-d H:i:s') : now()->addDays(3)->format('Y-m-d H:i:s'),
+        'booking_hours' => $bookingHours,
+        
+        // Price info
+        'price' => $bookingPrice,
+        'deposit' => $depositAmount,
+        'addons' => (float) $request->query('addons', 0),
+        'discount' => $discountAmount,
+        'voucher_code' => $appliedVoucher ? $appliedVoucher->voucher_code : null,
+        'total' => $grandTotal,
+        
+        // COORDINATES - THIS WAS MISSING!
+        'pickup_lat' => $request->query('pickup_lat', '1.558557'),
+        'pickup_lng' => $request->query('pickup_lng', '103.636647'),
+        'return_lat' => $request->query('return_lat', '1.558557'),
+        'return_lng' => $request->query('return_lng', '103.636647'),
+        'destination_lat' => $request->query('destination_lat', ''),
+        'destination_lng' => $request->query('destination_lng', ''),
+    ];
+
+    // Debug: Log the received data
+    \Log::info('Confirm Booking Data:', $bookingDetails);
+
+    // Return confirm booking view with data
+    return view('booking.confirm', compact('car', 'bookingDetails'));
+}
 
     /**
      * Handle receipt upload and save to rental.

@@ -6,21 +6,28 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Auth\CustomerController;
 use App\Http\Controllers\LoyaltyController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\AdminController;
 
+
+
+
 Route::get('/', [HomeController::class, 'index'])->name('mainpage');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+Route::get('/booking/calendar', [RentalController::class, 'calendar'])->name('booking.calendar');
+Route::get('/booking/confirm', [RentalController::class, 'confirm'])->name('booking.confirm');
+Route::get('/booking/voucher', [RentalController::class, 'voucher'])->name('booking.voucher');
 
-    // Profile
+Route::middleware('auth')->group(function (){
+    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
+
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     Route::get('/profile/personal-data', [ProfileController::class, 'personalData'])->name('profile.personal-data');
     Route::patch('/profile/personal-data', [ProfileController::class, 'updatePersonalData'])->name('profile.personal-data.update');
     Route::get('/profile/driving-license', [ProfileController::class, 'drivingLicense'])->name('profile.driving-license');
@@ -29,18 +36,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/booking/{id}/cancel', [BookingController::class, 'showCancelForm'])->name('booking.cancel.form');
     Route::post('/booking/{id}/cancel', [BookingController::class, 'cancelBooking'])->name('booking.cancel');
     
-
     // Loyalty Routes
     Route::get('/loyalty', [LoyaltyController::class, 'index'])->name('loyalty.index');
-    Route::get('/loyalty/redeem', [VoucherController::class, 'redeemPage'])->name('loyalty.redeem');
-    Route::post('/loyalty/redeem', [VoucherController::class, 'store'])->name('voucher.store');
+    
+    // Voucher Routes
+    Route::get('/loyalty/redeem', [VoucherController::class, 'redeemPage'])->name('loyalty.redeem'); // Selection Page
+    Route::post('/loyalty/redeem', [VoucherController::class, 'store'])->name('voucher.store'); // Process Redemption
+    
     Route::get('/profile/vouchers', [VoucherController::class, 'index'])->name('profile.vouchers');
 
-    // Rental
     Route::get('/test-rental', [RentalController::class, 'store']);
-    Route::get('/booking/calendar', [RentalController::class, 'calendar'])->name('booking.calendar');
-    Route::get('/booking/confirm', [RentalController::class, 'confirm'])->name('booking.confirm');
-    Route::get('/booking/voucher', [RentalController::class, 'voucher'])->name('booking.voucher');
+    Route::get('/test-rental', [RentalController::class, 'store']);
     Route::get('/booking/pickup', [RentalController::class, 'pickup'])->name('booking.pickup');
     Route::post('/booking/pickup', [RentalController::class, 'storePickup'])->name('booking.pickup.store');
     Route::get('/booking/return', [RentalController::class, 'returnCar'])->name('booking.return');
@@ -48,19 +54,33 @@ Route::middleware('auth')->group(function () {
     Route::get('/booking/complete', [RentalController::class, 'complete'])->name('booking.complete');
     Route::get('/booking/reminder', [RentalController::class, 'reminder'])->name('booking.reminder');
     Route::post('/booking', [RentalController::class, 'store'])->name('booking.store');
+    Route::get('/booking/pickup_form', function () {
+    return view('booking.pickup_form');
+    })->name('booking.pickup');
+    
 
-    // ✅ Upload Receipt Page (shows QR + allows upload)
-    Route::get('/upload-receipt', function () {
-        return view('payment.upload_receipt'); // Contains QR + upload form
-    })->name('payment.upload_receipt');
+   Route::get('/payment/verify/{id?}', [App\Http\Controllers\PaymentController::class, 'verifyPage'])->name('payment.verify');
+   
+   // Show upload receipt page
+Route::get('/payment/upload-receipt', function () {
+    return view('payment.upload_receipt');
+})->name('payment.upload.form');
 
-    // ✅ Handle upload
+// Handle upload
+Route::post('/payment/upload-receipt', [PaymentController::class, 'uploadReceipt'])
+    ->name('payment.upload');
+
+
+    Route::post('/payment/verify/{id}/accept', [App\Http\Controllers\PaymentController::class, 'accept'])->name('payment.verify.accept');
+    Route::post('/payment/verify/{id}/decline', [App\Http\Controllers\PaymentController::class, 'decline'])->name('payment.verify.decline');
+    
+    // Refund Routes
+    Route::get('/payment/refund/{id}', [App\Http\Controllers\PaymentController::class, 'refundPage'])->name('payment.refund');
+    Route::post('/payment/refund/{id}', [App\Http\Controllers\PaymentController::class, 'storeRefund'])->name('payment.refund.store');
+
+    Route::post('/booking/create-rental', [RentalController::class, 'createRentalFromBooking'])->name('booking.create_rental');
     Route::post('/payment/upload-receipt', [RentalController::class, 'storeReceipt'])->name('payment.storeReceipt');
 
-    // ✅ Create rental from confirm (before upload)
-    Route::post('/booking/create-rental', [RentalController::class, 'createRentalFromBooking'])->name('booking.create_rental');
-
-    // Admin
     Route::middleware('checkAdmin')->group(function () {
         Route::get('/booking', [RentalController::class, 'index'])->name('booking.index');
         Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
@@ -84,7 +104,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/documents/{customerId}/reject', [AdminController::class, 'rejectDocuments'])->name('admin.documents.reject');
     });
 
-    
 });
 
 require __DIR__.'/auth.php';
