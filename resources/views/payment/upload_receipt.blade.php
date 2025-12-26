@@ -260,6 +260,16 @@
         <!-- Form -->
         <form action="{{ route('payment.storeReceipt') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
             @csrf
+            
+            @if($errors->any())
+                <div style="background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <p class="qr-instruction">
                 Please scan the QR code below using your banking app to complete the payment.

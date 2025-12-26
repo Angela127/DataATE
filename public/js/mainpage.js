@@ -257,18 +257,24 @@ function initSmoothScroll() {
 // Rent & Details buttons (base DOM)
 function initCarButtons() {
     document.querySelectorAll('.btn-rent').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const name = btn.getAttribute('data-car-name') || 'this car';
+        btn.addEventListener('click', (e) => {
+            e.preventDefault(); // Good practice to prevent any default behavior
+            console.log('Rent button clicked');
+            const plateNo = btn.getAttribute('data-plate-no');
+            console.log('Plate No:', plateNo);
 
-            if (name.toLowerCase().includes('bezza') && name.includes('2023')) {
-                window.location.href = "/booking/calendar";
+            if (plateNo) {
+                const url = `/booking/calendar?car=${encodeURIComponent(plateNo)}`;
+                console.log('Redirecting to:', url);
+                window.location.href = url;
             } else {
-                alert(`Renting: ${name}\n\nPlease login to continue with the rental process.`);
+                console.error('No plate number found for this car');
+                alert('Error: Could not find car details. Please try again.');
             }
         });
     });
 
-        document.querySelectorAll('.btn-details').forEach(btn => {
+    document.querySelectorAll('.btn-details').forEach(btn => {
         btn.addEventListener('click', () => {
             const card = btn.closest('.car-card');
             if (!card) return;
@@ -288,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDots();
     startAutoPlay();
     initSmoothScroll();
-    initCarButtons();   
+    initCarButtons();
 });
 
 // Cleanup on page unload

@@ -86,6 +86,7 @@ class Customer extends Model
         return $this->vouchers()->active();
     }
 
+   
     /**
      * Assign a sequential customer ID if not provided.
      */

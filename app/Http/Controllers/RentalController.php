@@ -9,8 +9,124 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Payment;
+
 class RentalController extends Controller
 {
+    // ... (existing code top) ...
+    
+    /**
+     * Create rental from booking confirmation (Form Submit).
+     */
+    public function createRentalFromBooking(Request $request)
+    {
+        $user = Auth::user();
+        
+        if (!$user || !$user->customer) {
+            return redirect()->route('login')->with('error', 'Please login to continue.');
+        }
+
+        // Validate
+        $request->validate([
+            'car' => 'required',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date',
+            'pickup_location' => 'required|string',
+            'return_location' => 'required|string',
+            'destination' => 'required|string',
+            'price' => 'numeric',
+            'booking_hours' => 'numeric'
+        ]);
+
+        $paymentId = 'PAY-' . strtoupper(uniqid()); 
+        
+        // Create Payment Record
+        $payment = Payment::create([
+            'payment_id' => $paymentId,
+            'customer_id' => $user->customer->customer_id ?? $user->customer->id,
+            'amount' => $request->input('price'), // Total price passed from form
+            'verification_status' => 'pending',
+            'deposit' => 50.00, // Assuming fixed deposit
+            'penalty' => 0.00,
+            'refund_amount' => 0.00,
+        ]);
+
+        // Create Rental Record
+        $rental = new Rental();
+        $rental->customer_id = $user->customer->customer_id ?? $user->customer->id;
+        $rental->plate_no = $request->input('car');
+        $rental->start_time = Carbon::parse($request->input('start_time'));
+        $rental->end_time = Carbon::parse($request->input('end_time'));
+        $rental->pick_up_location = $request->input('pickup_location');
+        $rental->return_location = $request->input('return_location');
+        $rental->destination = $request->input('destination');
+        
+        // Default values for required fields (to match DB schema constraints)
+        $rental->car_condition_pickup = 'Pending';
+        $rental->car_description_pickup = 'Pending';
+        $rental->agreement_form = 'Pending';
+        $rental->car_condition_return = 'Pending';
+        $rental->car_description_return = 'Pending';
+        $rental->inspection_form = 'Pending';
+        $rental->rating = 0; // Default rating
+        
+        $rental->payment_id = $paymentId; 
+        
+        $rental->payment_status = 'pending';
+        // $rental->verification_status = 'pending'; // Removed from rental
+        
+        $rental->save();
+
+        // Redirect to receipt upload
+        return redirect()->route('payment.upload_receipt')->with('success', 'Booking created! Please upload your payment receipt.');
+    }
+
+    /**
+     * Handle receipt upload and save to rental.
+     */
+    public function storeReceipt(Request $request)
+    {
+        // Validate the uploaded file
+        $request->validate([
+            'receipt' => 'required|file|mimes:jpg,png,jpeg,pdf|max:2048', // Max 2MB
+        ]);
+
+        $user = Auth::user();
+        
+        // Ensure user has a customer profile
+        if (!$user->customer) {
+            return back()->withErrors(['msg' => 'Customer profile not found. Please complete your profile first.']);
+        }
+
+        // Find the latest rental for this CUSTOMER
+        $rental = Rental::where('customer_id', $user->customer->customer_id)
+            ->latest()
+            ->first();
+
+        // Fallback
+        if (!$rental) {
+             $rental = Rental::where('customer_id', $user->customer->id)->latest()->first();
+        }
+
+        if (!$rental || !$rental->payment) {
+            return back()->withErrors(['msg' => 'No active payment record found for this account.']);
+        }
+
+        // Store the file
+        $path = $request->file('receipt')->store('receipts', 'public');
+
+        // Save receipt path and update payment status on PAYMENT table
+        $rental->payment->receipt_path = $path;
+        $rental->payment->verification_status = 'pending'; // Changed to pending for verification
+        $rental->payment->save();
+        
+        // Update rental status just in case
+        $rental->payment_status = 'pending';
+        $rental->save();
+
+        // Redirect with success message
+        return redirect()->route('mainpage')->with('success', 'Receipt uploaded! Your booking is pending staff approval.');
+    }
     /**
      * Store a new rental record (API style).
      */
@@ -226,37 +342,14 @@ class RentalController extends Controller
     }
 
     /**
+     * Create rental from booking confirmation (Form Submit).
+     */
+    // Duplicate method removed.
+
+    /**
      * Handle receipt upload and save to rental.
      */
-    public function storeReceipt(Request $request)
-    {
-        // Validate the uploaded file
-        $request->validate([
-            'receipt' => 'required|file|mimes:jpg,png,jpeg,pdf|max:2048', // Max 2MB
-        ]);
-
-        $user = Auth::user();
-
-        // Store the file in storage/app/public/receipts/
-        $path = $request->file('receipt')->store('receipts', 'public');
-
-        // Find the latest rental where customer_id matches the logged-in user's ID
-        $rental = Rental::where('customer_id', $user->id)
-            ->latest()
-            ->first();
-
-        if (!$rental) {
-            return back()->withErrors('No rental record found for this user.');
-        }
-
-        // Save receipt path and update payment status
-        $rental->receipt_path = $path;
-        $rental->payment_status = 'paid';
-        $rental->save();
-
-        // Redirect with success message
-        return redirect()->route('mainpage')->with('success', 'Receipt uploaded! Your booking is pending staff approval.');
-    }
+    // Duplicate storeReceipt removed.
 
     /**
      * Show pickup form.

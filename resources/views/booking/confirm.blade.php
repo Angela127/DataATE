@@ -187,11 +187,23 @@
         </section>
 
         <!-- Pay Now Button -->
-        <button class="pay-now-btn" onclick="proceedToPayment()">Pay Now</button>
+        <form action="{{ route('booking.create_rental') }}" method="POST">
+            @csrf
+            <input type="hidden" name="car" value="{{ $bookingDetails['car'] }}">
+            <input type="hidden" name="start_time" value="{{ $bookingDetails['start_time'] }}">
+            <input type="hidden" name="end_time" value="{{ $bookingDetails['end_time'] }}">
+            <input type="hidden" name="booking_hours" value="{{ $bookingDetails['booking_hours'] }}">
+            <input type="hidden" name="pickup_location" value="{{ $bookingDetails['pickup_location'] }}">
+            <input type="hidden" name="return_location" value="{{ $bookingDetails['return_location'] }}">
+            <input type="hidden" name="destination" value="{{ $bookingDetails['destination'] }}">
+            <input type="hidden" name="price" value="{{ $bookingDetails['total'] }}">
+
+            <button type="submit" class="pay-now-btn">Pay Now</button>
+        </form>
     </div>
     <script>
-    const PICKUP_URL = "{{ route('payment.upload_receipt') }}";
-</script>
+    // const PICKUP_URL = "{{ route('payment.upload_receipt') }}"; // No longer needed
+    </script>
 <script src="{{ asset('js/booking_confirm.js') }}"></script>
 
 </body>

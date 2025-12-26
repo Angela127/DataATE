@@ -116,7 +116,7 @@
 
                     <div class="car-actions">
                         @if ($isAvailable)
-                            <button class="btn btn-rent" data-car-name="{{ $car->model }}">Rent</button>
+                            <button class="btn btn-rent" data-car-name="{{ $car->model }}" data-plate-no="{{ $car->plate_no }}">Rent</button>
                             <button class="btn btn-details" data-car-name="{{ $car->model }}">Details</button>
                         @else
                             <button class="btn btn-unavailable" disabled>Not Available</button>
@@ -141,6 +141,6 @@
     </div>
 </section>
 
-    <script src="{{ asset('js/mainpage.js') }}"></script>
+    <script src="{{ asset('js/mainpage.js') }}?v={{ time() }}"></script>
 </body>
 </html>

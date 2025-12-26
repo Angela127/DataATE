@@ -11,6 +11,23 @@ class Rental extends Model
 
     protected $table = 'rental';
 
+      public function car()
+    {
+        return $this->belongsTo(Car::class, 'plate_no', 'plate_no');
+    }
+
+    public function customer()
+    {
+        // Assuming 'customer_id' in rental table stores the string ID (e.g. C001)
+        // and 'customer_id' in customers table is that string ID.
+        return $this->belongsTo(Customer::class, 'customer_id', 'customer_id');
+    }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'payment_id', 'payment_id');
+    }
+    
     protected $fillable = [
         'customer_id',
         'plate_no',
@@ -33,5 +50,6 @@ class Rental extends Model
         'reject_reason',
         'verification_status',
         'payment_status',
+        'receipt_path',
     ];
 }

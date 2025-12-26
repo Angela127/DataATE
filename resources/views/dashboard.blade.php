@@ -526,18 +526,74 @@
             </a>
         </div>
 
-        <!-- Recent Activity -->
-        <h2 class="section-title">Recent Activity</h2>
+        <!-- Notifications -->
+        <h2 class="section-title">Notifications</h2>
         <div class="activity-card">
-            <div class="activity-list">
-                <div class="empty-activity">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                    </svg>
-                    <p>No recent activity yet. Start by making your first booking!</p>
-                </div>
+            <div class="activity-list" id="notificationList">
+                @forelse(Auth::user()->notifications as $index => $notification)
+                    <a href="{{ $notification->data['action_url'] ?? '#' }}" 
+                       class="activity-item {{ $index >= 3 ? 'notification-hidden' : '' }}" 
+                       style="text-decoration: none; color: inherit; display: flex; {{ $index >= 3 ? 'display: none;' : '' }}">
+                        <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                            <div class="activity-dot {{ isset($notification->data['status']) && $notification->data['status'] === 'verified' ? 'success' : 'pending' }}"></div>
+                            <div class="activity-content">
+                                <div class="activity-text" style="font-weight: 500;">
+                                    {{ $notification->data['message'] ?? 'Notification' }}
+                                </div>
+                                <div class="activity-time">
+                                    {{ $notification->created_at->diffForHumans() }}
+                                </div>
+                            </div>
+                            @if(!$notification->read_at)
+                                <div style="width: 8px; height: 8px; background: #E75B5B; border-radius: 50%;"></div>
+                            @endif
+                        </div>
+                    </a>
+                    {{ $notification->markAsRead() }}
+                @empty
+                    <div class="empty-activity">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <p>No new notifications.</p>
+                    </div>
+                @endforelse
             </div>
+
+            @if(Auth::user()->notifications->count() > 3)
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="toggleNotificationsBtn" onclick="toggleNotifications()" style="background: none; border: none; color: var(--accent-blue); font-weight: 600; cursor: pointer; padding: 10px;">
+                        Show All
+                    </button>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <script>
+        function toggleNotifications() {
+            const hiddenItems = document.querySelectorAll('.notification-hidden');
+            const btn = document.getElementById('toggleNotificationsBtn');
+            let isHidden = false;
+
+            hiddenItems.forEach(item => {
+                if (item.style.display === 'none') {
+                    item.style.display = 'flex';
+                    isHidden = true; // Was hidden, now shown
+                } else {
+                    item.style.display = 'none';
+                    isHidden = false; // Was shown, now hidden
+                }
+            });
+
+            if (isHidden) {
+                btn.textContent = 'Show Less';
+            } else {
+                btn.textContent = 'Show All';
+            }
+        }
+    </script>
         </div>
     </div>
 </body>
