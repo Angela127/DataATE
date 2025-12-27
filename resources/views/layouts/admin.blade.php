@@ -22,7 +22,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-primary); display: flex; min-height: 100vh; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-primary); display: flex; min-height: 100vh; overflow-y: scroll; }
 
         /* Sidebar */
         .sidebar {
@@ -141,8 +141,10 @@
                     Booking
                 </a>
             </li>
+            
+            <!-- Fleet Management Section -->
             <li class="nav-item">
-                <a href="#">
+                <a href="{{ route('admin.cars.index') }}" class="{{ request()->routeIs('admin.cars.*') ? 'active' : '' }}">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="1" y="3" width="15" height="13"></rect>
                         <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
@@ -155,7 +157,7 @@
 
             <!-- Loyalty Section -->
             <li class="nav-item">
-                <a href="{{ route('admin.voucher_stats') }}" class="{{ request()->routeIs('admin.voucher_stats') ? 'active' : '' }}">
+                <a href="{{ route('admin.vouchers.index') }}" class="{{ request()->routeIs('admin.vouchers.*', 'admin.loyalty.*') ? 'active' : '' }}">
                      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                     </svg>  

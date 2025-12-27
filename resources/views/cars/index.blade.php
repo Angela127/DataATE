@@ -111,6 +111,7 @@
                 }
             @endphp
 
+
             <div class="car-card {{ $isAvailable ? '' : 'unavailable' }}" data-car-name="{{ $car->model }}">
                 <div class="car-image">
                     <img src="{{ $imageUrl }}" alt="{{ $car->model }}" loading="lazy">
@@ -119,11 +120,9 @@
                     <h3 class="car-name">{{ $car->model }}</h3>
 
                     <div class="car-actions">
-@if ($isAvailable)
-    <button class="btn btn-rent" data-car-plate="{{ $car->plate_no }}" data-car-name="{{ $car->model }}">
-        Rent
-    </button>
-    <button class="btn btn-details" data-car-name="{{ $car->model }}">Details</button>
+                        @if ($isAvailable)
+                            <button class="btn btn-rent" data-car-name="{{ $car->model }}">Rent</button>
+                            <button class="btn btn-details" data-car-name="{{ $car->model }}">Details</button>
                         @else
                             <button class="btn btn-unavailable" disabled>Not Available</button>
                         @endif

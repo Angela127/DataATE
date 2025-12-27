@@ -104,6 +104,6 @@ class LoyaltyController extends Controller
 
         Loyalty::saveRewardTiers($newTiers);
 
-        return redirect()->route('admin.customer_loyalty')->with('success', 'Loyalty rules updated successfully.');
+        return redirect()->route('admin.loyalty.index')->with('success', 'Loyalty rules updated successfully.');
     }
 }
