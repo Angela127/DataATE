@@ -47,6 +47,19 @@ class RentalController extends Controller
      */
     public function calendar(Request $request)
     {
+        // Check authentication
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $user = Auth::user();
+
+        // Check profile completion (documents uploaded)
+        if (!$user->customer || !$user->customer->hasUploadedAllDocuments()) {
+            return redirect()->route('profile.edit')
+                ->with('error', 'Please complete your profile and upload all required documents (License, IC, Matric Card) before booking a car.');
+        }
+
         // Fetch all rentals with their car relationship
         $rentals = Rental::with('car')->get();
 
@@ -107,28 +120,31 @@ class RentalController extends Controller
         return view('booking.voucher');
     }
     
+  public function initiate(Request $request)
+    {
+        $request->validate([
+            'car_id' => 'required|exists:cars,id'
+        ]);
 
+        // Store the selected car ID in the session
+        session(['selected_car_id' => $request->car_id]);
+
+        // Redirect directly to profile
+        return redirect()->route('profile.show')
+            ->with('info', 'Please complete your profile to proceed with the rental.');
+    }
+    
     public function confirm(Request $request)
     {
         // Check if customer has approved documents
         $user = Auth::user();
         if ($user && $user->customer) {
-            if (!$user->customer->canRentCar()) {
-                $status = $user->customer->documents_status;
-                $message = 'You must upload and get approval for all required documents before renting a car.';
-                
-                if ($status === 'pending') {
-                    $message = 'Your documents are currently under review. Please wait for admin approval before renting a car.';
-                } elseif ($status === 'rejected') {
-                    $message = 'Your documents have been rejected. Please re-upload them addressing the admin\'s feedback.';
-                } elseif (!$user->customer->hasUploadedAllDocuments()) {
-                    $message = 'Please upload all required documents (License, Identity Card, and Matric/Staff Card) in your profile before renting a car.';
-                }
-                
-                return redirect()->route('profile.personal-data')->with('error', $message);
+            // Check if documents are uploaded (Profile Complete)
+            if (!$user->customer->hasUploadedAllDocuments()) {
+                return redirect()->route('profile.edit')->with('error', 'Please complete your profile and upload all required documents (License, IC, Matric Card) before booking a car.');
             }
         } else {
-            return redirect()->route('profile.personal-data')->with('error', 'Please complete your profile and upload required documents before renting a car.');
+            return redirect()->route('profile.edit')->with('error', 'Please complete your profile and upload required documents before renting a car.');
         }
 
         // Get the selected car plate number from query parameter
@@ -235,7 +251,60 @@ class RentalController extends Controller
 }
 
     /**
-     * Handle receipt upload and save to rental.
+     * Create rental from booking confirmation.
+     */
+    public function createRentalFromBooking(Request $request)
+    {
+        $user = Auth::user();
+        
+        // 1. Create Payment Record (Pending)
+        $paymentId = 'PAY-' . time() . '-' . rand(1000, 9999);
+        $amount = (float) $request->input('total');
+        
+        // If customer_id in payments refers to 'id' in customers table, we need to fetch it.
+        // Assuming Rental table customer_id stores User ID (based on storeReceipt usage), 
+        // BUT Payments table migration says foreign key to customers.customer_id.
+        // Let's check Customer model. Customer has customer_id string (C000001).
+        
+        $customer = $user->customer;
+        if (!$customer) {
+             return redirect()->back()->with('error', 'Customer profile not found.');
+        }
+
+        // Create Payment
+        \DB::table('payments')->insert([
+            'payment_id' => $paymentId,
+            'customer_id' => $customer->customer_id, // Use actual customer_id string
+            'amount' => $amount,
+            'verification_status' => 'pending',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // 2. Create Rental Record
+        $rental = Rental::create([
+            'customer_id' => $user->id, // Rental table uses User ID based on existing code context
+            'plate_no' => $request->input('car'),
+            'payment_id' => $paymentId,
+            'start_time' => $request->input('start_time'),
+            'end_time' => $request->input('end_time'),
+            'pick_up_location' => $request->input('pickup_location'),
+            'return_location' => $request->input('return_location'),
+            'destination' => $request->input('destination'),
+            'payment_status' => 'pending',
+            'pickup_lat' => $request->input('pickup_lat'),
+            'pickup_lng' => $request->input('pickup_lng'),
+            'return_lat' => $request->input('return_lat'),
+            'return_lng' => $request->input('return_lng'),
+            'destination_lat' => $request->input('destination_lat'),
+            'destination_lng' => $request->input('destination_lng'),
+        ]);
+
+        return redirect()->route('payment.upload.form')->with('success', 'Booking initiated! Please upload your payment receipt.');
+    }
+
+    /**
+     * Handle receipt upload and save to payment.
      */
     public function storeReceipt(Request $request)
     {
@@ -246,10 +315,10 @@ class RentalController extends Controller
 
         $user = Auth::user();
 
-        // Store the file in storage/app/public/receipts/
+        // Store the file in receipt folder
         $path = $request->file('receipt')->store('receipts', 'public');
 
-        // Find the latest rental where customer_id matches the logged-in user's ID
+        // Find the latest rental for this user
         $rental = Rental::where('customer_id', $user->id)
             ->latest()
             ->first();
@@ -258,9 +327,20 @@ class RentalController extends Controller
             return back()->withErrors('No rental record found for this user.');
         }
 
-        // Save receipt path and update payment status
-        $rental->receipt_path = $path;
-        $rental->payment_status = 'paid';
+        // Find the associated payment
+        $payment = \DB::table('payments')->where('payment_id', $rental->payment_id)->first();
+
+        if ($payment) {
+            // Update Payment record
+            \DB::table('payments')->where('payment_id', $rental->payment_id)->update([
+                'receipt_path' => $path,
+                'verification_status' => 'pending',
+                'updated_at' => now()
+            ]);
+        }
+        
+        // Update Rental Status
+        $rental->payment_status = 'paid'; // Or 'pending' depending on flow, usually 'paid' implies user action done
         $rental->save();
 
         // Redirect with success message

@@ -258,17 +258,13 @@ function initSmoothScroll() {
 function initCarButtons() {
     document.querySelectorAll('.btn-rent').forEach(btn => {
         btn.addEventListener('click', () => {
-            const name = btn.getAttribute('data-car-name') || 'this car';
-
-            if (name.toLowerCase().includes('bezza') && name.includes('2023')) {
-                window.location.href = "/booking/calendar";
-            } else {
-                alert(`Renting: ${name}\n\nPlease login to continue with the rental process.`);
-            }
+            const carPlate = btn.dataset.carPlate;
+            // Redirect to booking calendar with car plate
+            window.location.href = `/booking/calendar?car=${encodeURIComponent(carPlate)}`;
         });
     });
 
-        document.querySelectorAll('.btn-details').forEach(btn => {
+    document.querySelectorAll('.btn-details').forEach(btn => {
         btn.addEventListener('click', () => {
             const card = btn.closest('.car-card');
             if (!card) return;
@@ -288,21 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDots();
     startAutoPlay();
     initSmoothScroll();
-    initCarButtons();   
+    initCarButtons();
 });
 
 // Cleanup on page unload
 window.addEventListener('beforeunload', () => {
     stopAutoPlay();
-});
-
-document.querySelectorAll('.btn-rent').forEach(button => {
-    button.addEventListener('click', function() {
-        const carPlate = this.dataset.carPlate;
-        const carName = this.dataset.carName;
-
-        // Build URL with query parameter
-        const url = `/booking/calendar?car=${encodeURIComponent(carPlate)}`;
-        window.location.href = url;
-    });
 });

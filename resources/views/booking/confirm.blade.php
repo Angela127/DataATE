@@ -195,11 +195,21 @@
             </div>
         </section>
 
-        <!-- Pay Now Button -->
-        <button class="pay-now-btn" onclick="proceedToPayment()">Pay Now</button>
+        <!-- Pay Now Form -->
+        <form action="{{ route('booking.create_rental') }}" method="POST" id="paymentForm">
+            @csrf
+            
+            @foreach($bookingDetails as $key => $value)
+                @if($value !== null)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endif
+            @endforeach
+            
+            <button type="submit" class="pay-now-btn">Pay Now</button>
+        </form>
     </div>
 <script>
-    const PICKUP_URL = "{{ route('payment.upload_receipt') }}";
+    // PICKUP_URL not needed anymore as form submits directly
 </script>
 <script src="{{ asset('js/booking_confirm.js') }}"></script>
 

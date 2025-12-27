@@ -36,6 +36,20 @@ class Rental extends Model
         'pickup_lat', 'pickup_lng',
         'destination_lat', 'destination_lng',
         'return_lat', 'return_lng',
-        
     ];
+
+    public function car()
+    {
+        return $this->belongsTo(Car::class, 'plate_no', 'plate_no');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'customer_id', 'id'); // Assuming customer_id maps to user->id based on controller usage
+    }
+
+    public function customer()
+    {
+         return $this->belongsTo(Customer::class, 'customer_id', 'user_id'); // If mapping to customer table
+    }
 }

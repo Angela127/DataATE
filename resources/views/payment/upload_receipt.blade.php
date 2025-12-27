@@ -258,7 +258,7 @@
         </div>
 
         <!-- Form -->
-        <form action="{{ route('payment.upload') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+        <form action="{{ route('payment.storeReceipt') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
             @csrf
 
             <p class="qr-instruction">
