@@ -209,9 +209,75 @@
         </form>
     </div>
 <script>
+<<<<<<< Updated upstream
     // PICKUP_URL not needed anymore as form submits directly
+=======
+    const PICKUP_URL = "{{ route('booking.pickup') }}";
+    
+    // This function is now in booking_confirm.js
+    // But we keep this inline version as backup with complete data
+    function editBooking() {
+        const params = new URLSearchParams({
+            car: '{{ $bookingDetails['car'] ?? request('car') }}',
+            destination: '{{ $bookingDetails['destination'] ?? request('destination') }}',
+            Pickup: '{{ $bookingDetails['pickup_location'] ?? request('Pickup') }}',
+            Return: '{{ $bookingDetails['return_location'] ?? request('Return') }}',
+            start_time: '{{ $bookingDetails['start_time'] ?? request('start_time') }}',
+            end_time: '{{ $bookingDetails['end_time'] ?? request('end_time') }}',
+            pickup_lat: '{{ $bookingDetails['pickup_lat'] ?? request('pickup_lat') }}',
+            pickup_lng: '{{ $bookingDetails['pickup_lng'] ?? request('pickup_lng') }}',
+            return_lat: '{{ $bookingDetails['return_lat'] ?? request('return_lat') }}',
+            return_lng: '{{ $bookingDetails['return_lng'] ?? request('return_lng') }}',
+            destination_lat: '{{ $bookingDetails['destination_lat'] ?? request('destination_lat') }}',
+            destination_lng: '{{ $bookingDetails['destination_lng'] ?? request('destination_lng') }}'
+        });
+        
+        // Remove empty parameters
+        for (let [key, value] of [...params.entries()]) {
+            if (!value || value === '') {
+                params.delete(key);
+            }
+        }
+        
+        window.location.href = "{{ route('booking.calendar') }}?" + params.toString();
+    }
+    function applyLocationAddon() {
+    const pickup = '{{ strtolower($bookingDetails['pickup_location']) }}'.trim();
+    const dropoff = '{{ strtolower($bookingDetails['return_location']) }}'.trim();
+
+    let locationAddon = 0;
+
+    if (pickup !== 'student mall') {
+        locationAddon += 10;
+    }
+
+    if (dropoff !== 'student mall') {
+        locationAddon += 10;
+    }
+
+    if (locationAddon === 0) return;
+
+    // Read existing amounts
+    const bookingPrice = {{ $bookingDetails['price'] }};
+    const deposit = {{ $bookingDetails['deposit'] }};
+    const baseAddons = {{ $bookingDetails['addons'] }};
+    const discount = {{ $bookingDetails['discount'] ?? 0 }};
+
+    const newAddons = baseAddons + locationAddon;
+    const newTotal = bookingPrice + deposit + newAddons - discount;
+
+    // Update UI
+    document.getElementById('addonsAmount').textContent = `RM${newAddons.toFixed(2)}`;
+    document.getElementById('totalPrice').textContent = `RM${newTotal.toFixed(2)}`;
+
+    console.log('📍 Location Add-on: RM' + locationAddon);
+}
+document.addEventListener('DOMContentLoaded', function () {
+    applyLocationAddon();
+});
+
+>>>>>>> Stashed changes
 </script>
-<script src="{{ asset('js/booking_confirm.js') }}"></script>
 
 </body>
 

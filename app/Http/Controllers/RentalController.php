@@ -126,6 +126,7 @@ class RentalController extends Controller
             'car_id' => 'required|exists:cars,id'
         ]);
 
+<<<<<<< Updated upstream
         // Store the selected car ID in the session
         session(['selected_car_id' => $request->car_id]);
 
@@ -150,6 +151,13 @@ class RentalController extends Controller
         // Get the selected car plate number from query parameter
         $plate_no = $request->query('car');
         $car = \App\Models\Car::where('plate_no', $plate_no)->first();
+=======
+public function confirm(Request $request)
+{
+    // Get the selected car plate number from query parameter
+    $plate_no = $request->query('car');
+    $car = \App\Models\Car::where('plate_no', $plate_no)->first();
+>>>>>>> Stashed changes
 
     // Get booking details from query parameters
     $start_time = $request->query('start_time');
@@ -170,6 +178,7 @@ class RentalController extends Controller
         } catch (\Exception $e) {
             $bookingHours = (int) $request->query('hours', 0);
         }
+<<<<<<< Updated upstream
     }
 
     // Calculate prices
@@ -406,6 +415,10 @@ class RentalController extends Controller
         return view('admin.booking.index', compact('rentals'));
     
 
+=======
+    }
+
+>>>>>>> Stashed changes
     // Calculate prices
     $depositAmount = 50;
     $bookingPrice = 0;

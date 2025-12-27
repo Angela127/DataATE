@@ -3,6 +3,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log('=== CONFIRM PAGE LOADED ===');
     initializePaymentOptions();
+<<<<<<< Updated upstream
     
     // Calculate surcharge after page loads
     setTimeout(() => {
@@ -11,7 +12,16 @@ document.addEventListener('DOMContentLoaded', function () {
             showNotification(`Additional location charge: RM${surcharge.toFixed(2)}`, 'info');
         }
     }, 100);
+=======
+
+    const surcharge = calculateLocationSurcharge();
+
+    if (surcharge > 0) {
+        showNotification(`Additional location charge: RM${surcharge}`, 'info');
+    }
+>>>>>>> Stashed changes
 });
+
 
 // Initialize payment options
 function initializePaymentOptions() {
@@ -28,15 +38,23 @@ function initializePaymentOptions() {
     });
 }
 
+
 // Go back
 function goBack() {
-    window.history.back();
+   window.location.href = "{{ route('booking.calendar') }}";
 }
 
 // Edit booking - go back to calendar with all parameters
 function editBooking() {
+<<<<<<< Updated upstream
     const urlParams = new URLSearchParams(window.location.search);
     
+=======
+    // Get all the booking data from the current page
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Build the URL with all booking parameters
+>>>>>>> Stashed changes
     const params = new URLSearchParams({
         car: urlParams.get('car') || '',
         destination: urlParams.get('destination') || '',
@@ -59,6 +77,7 @@ function editBooking() {
         }
     }
     
+<<<<<<< Updated upstream
     console.log('Editing with params:', Object.fromEntries(params));
     window.location.href = '/booking/calendar?' + params.toString();
 }
@@ -128,7 +147,37 @@ function calculateLocationSurcharge() {
     }
     
     return surcharge;
+=======
+    console.log('Editing booking with params:', Object.fromEntries(params));
+    
+    // Navigate back to calendar with data
+    window.location.href = '/booking/calendar?' + params.toString();
+>>>>>>> Stashed changes
 }
+
+function calculateLocationSurcharge() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const pickup = (urlParams.get('Pickup') || '').toLowerCase().trim();
+    const dropoff = (urlParams.get('Return') || '').toLowerCase().trim();
+
+    let surcharge = 0;
+
+    if (pickup && pickup !== 'student mall') {
+        surcharge += 10;
+    }
+
+    if (dropoff && dropoff !== 'student mall') {
+        surcharge += 10;
+    }
+
+    console.log('📍 Pickup:', pickup);
+    console.log('📍 Return:', dropoff);
+    console.log('💰 Location surcharge: RM' + surcharge);
+
+    return surcharge;
+}
+
 
 function proceedToPayment() {
     if (typeof PICKUP_URL !== 'undefined') {
@@ -171,6 +220,7 @@ function showNotification(message, type = 'info') {
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
+
 
 // Add animation styles
 const style = document.createElement('style');

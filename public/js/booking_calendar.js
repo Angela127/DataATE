@@ -31,15 +31,25 @@ const bookingData = {
     '2025-12-22': 'few-hours',
 };
 
+<<<<<<< Updated upstream
 // Load booking data from URL parameters (for edit functionality)
+=======
+// Initialize calendar on page load
+>>>>>>> Stashed changes
 function loadBookingDataFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     
     console.log('=== LOADING EDIT DATA FROM URL ===');
     console.log('URL params:', Object.fromEntries(urlParams));
     
+<<<<<<< Updated upstream
     if (urlParams.toString() === '') {
         console.log('No URL parameters - fresh load');
+=======
+    // Check if there are any parameters
+    if (urlParams.toString() === '') {
+        console.log('No URL parameters found - this is a fresh load');
+>>>>>>> Stashed changes
         return;
     }
     
@@ -50,6 +60,11 @@ function loadBookingDataFromURL() {
         if (carSelect) {
             carSelect.value = car;
             console.log('✓ Car loaded:', car);
+<<<<<<< Updated upstream
+=======
+        } else {
+            console.error('✗ Car select element not found!');
+>>>>>>> Stashed changes
         }
     }
     
@@ -59,22 +74,41 @@ function loadBookingDataFromURL() {
     const destination = urlParams.get('destination');
     
     if (pickup) {
+<<<<<<< Updated upstream
         const el = document.getElementById('pickupLocation');
         if (el) {
             el.value = pickup;
             console.log('✓ Pickup loaded:', pickup);
+=======
+        const pickupEl = document.getElementById('pickupLocation');
+        if (pickupEl) {
+            pickupEl.value = pickup;
+            console.log('✓ Pickup location loaded:', pickup);
+        } else {
+            console.error('✗ Pickup location element not found!');
+>>>>>>> Stashed changes
         }
     }
     
     if (returnLoc) {
+<<<<<<< Updated upstream
         const el = document.getElementById('returnLocation');
         if (el) {
             el.value = returnLoc;
             console.log('✓ Return loaded:', returnLoc);
+=======
+        const returnEl = document.getElementById('returnLocation');
+        if (returnEl) {
+            returnEl.value = returnLoc;
+            console.log('✓ Return location loaded:', returnLoc);
+        } else {
+            console.error('✗ Return location element not found!');
+>>>>>>> Stashed changes
         }
     }
     
     if (destination) {
+<<<<<<< Updated upstream
         const el = document.getElementById('destination');
         if (el) {
             el.value = destination;
@@ -83,6 +117,18 @@ function loadBookingDataFromURL() {
     }
     
     // Load coordinates
+=======
+        const destEl = document.getElementById('destination');
+        if (destEl) {
+            destEl.value = destination;
+            console.log('✓ Destination loaded:', destination);
+        } else {
+            console.error('✗ Destination element not found!');
+        }
+    }
+    
+    // Load coordinates for locations
+>>>>>>> Stashed changes
     const pickupLat = urlParams.get('pickup_lat');
     const pickupLng = urlParams.get('pickup_lng');
     const returnLat = urlParams.get('return_lat');
@@ -91,26 +137,49 @@ function loadBookingDataFromURL() {
     const destLng = urlParams.get('destination_lng');
     
     if (pickupLat && pickupLng) {
+<<<<<<< Updated upstream
         const lat = document.getElementById('pickup_lat');
         const lng = document.getElementById('pickup_lng');
         if (lat && lng) {
             lat.value = pickupLat;
             lng.value = pickupLng;
             console.log('✓ Pickup coords loaded');
+=======
+        const latEl = document.getElementById('pickup_lat');
+        const lngEl = document.getElementById('pickup_lng');
+        if (latEl && lngEl) {
+            latEl.value = pickupLat;
+            lngEl.value = pickupLng;
+            console.log('✓ Pickup coordinates loaded:', pickupLat, pickupLng);
+        } else {
+            console.error('✗ Pickup coordinate elements not found!', { latEl, lngEl });
+>>>>>>> Stashed changes
         }
     }
     
     if (returnLat && returnLng) {
+<<<<<<< Updated upstream
         const lat = document.getElementById('return_lat');
         const lng = document.getElementById('return_lng');
         if (lat && lng) {
             lat.value = returnLat;
             lng.value = returnLng;
             console.log('✓ Return coords loaded');
+=======
+        const latEl = document.getElementById('return_lat');
+        const lngEl = document.getElementById('return_lng');
+        if (latEl && lngEl) {
+            latEl.value = returnLat;
+            lngEl.value = returnLng;
+            console.log('✓ Return coordinates loaded:', returnLat, returnLng);
+        } else {
+            console.error('✗ Return coordinate elements not found!', { latEl, lngEl });
+>>>>>>> Stashed changes
         }
     }
     
     if (destLat && destLng) {
+<<<<<<< Updated upstream
         const lat = document.getElementById('destination_lat');
         const lng = document.getElementById('destination_lng');
         if (lat && lng) {
@@ -121,10 +190,25 @@ function loadBookingDataFromURL() {
     }
     
     // Load dates and times
+=======
+        const latEl = document.getElementById('destination_lat');
+        const lngEl = document.getElementById('destination_lng');
+        if (latEl && lngEl) {
+            latEl.value = destLat;
+            lngEl.value = destLng;
+            console.log('✓ Destination coordinates loaded:', destLat, destLng);
+        } else {
+            console.error('✗ Destination coordinate elements not found!', { latEl, lngEl });
+        }
+    }
+    
+    // Load start and end times
+>>>>>>> Stashed changes
     const startTimeStr = urlParams.get('start_time');
     const endTimeStr = urlParams.get('end_time');
     
     if (startTimeStr && endTimeStr) {
+<<<<<<< Updated upstream
         try {
             const startDateTime = new Date(startTimeStr.replace(' ', 'T'));
             const endDateTime = new Date(endTimeStr.replace(' ', 'T'));
@@ -139,20 +223,64 @@ function loadBookingDataFromURL() {
             selectedEndDate = new Date(endDateTime.getFullYear(), endDateTime.getMonth(), endDateTime.getDate());
             
             // Convert start time
+=======
+        console.log('Loading times:', { start: startTimeStr, end: endTimeStr });
+        
+        try {
+            // Parse the datetime strings (format: YYYY-MM-DD HH:mm:ss)
+            const startDateTime = new Date(startTimeStr.replace(' ', 'T'));
+            const endDateTime = new Date(endTimeStr.replace(' ', 'T'));
+            
+            console.log('Parsed dates:', { startDateTime, endDateTime });
+            
+            // Validate dates
+            if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
+                console.error('✗ Invalid date format!');
+                return;
+            }
+            
+            // Set the selected dates
+            selectedStartDate = new Date(startDateTime.getFullYear(), startDateTime.getMonth(), startDateTime.getDate());
+            selectedEndDate = new Date(endDateTime.getFullYear(), endDateTime.getMonth(), endDateTime.getDate());
+            
+            console.log('✓ Selected dates set:', { selectedStartDate, selectedEndDate });
+            
+            // Extract time components for start time
+>>>>>>> Stashed changes
             let startHour = startDateTime.getHours();
             const startMinute = startDateTime.getMinutes();
             const startPeriod = startHour >= 12 ? 'PM' : 'AM';
             
+<<<<<<< Updated upstream
             if (startHour === 0) startHour = 12;
             else if (startHour > 12) startHour -= 12;
             
             startTime = { hour: startHour, minute: startMinute, period: startPeriod };
             
             // Convert end time
+=======
+            // Convert to 12-hour format
+            if (startHour === 0) {
+                startHour = 12;
+            } else if (startHour > 12) {
+                startHour -= 12;
+            }
+            
+            startTime = {
+                hour: startHour,
+                minute: startMinute,
+                period: startPeriod
+            };
+            
+            console.log('✓ Start time set:', startTime);
+            
+            // Extract time components for end time
+>>>>>>> Stashed changes
             let endHour = endDateTime.getHours();
             const endMinute = endDateTime.getMinutes();
             const endPeriod = endHour >= 12 ? 'PM' : 'AM';
             
+<<<<<<< Updated upstream
             if (endHour === 0) endHour = 12;
             else if (endHour > 12) endHour -= 12;
             
@@ -175,6 +303,52 @@ function loadBookingDataFromURL() {
         } catch (error) {
             console.error('Error loading dates:', error);
         }
+=======
+            // Convert to 12-hour format
+            if (endHour === 0) {
+                endHour = 12;
+            } else if (endHour > 12) {
+                endHour -= 12;
+            }
+            
+            endTime = {
+                hour: endHour,
+                minute: endMinute,
+                period: endPeriod
+            };
+            
+            console.log('✓ End time set:', endTime);
+            
+            // Update the calendar to show the correct month
+            currentMonth = selectedStartDate.getMonth();
+            currentYear = selectedStartDate.getFullYear();
+            
+            const monthSelect = document.getElementById('monthSelect');
+            const yearSelect = document.getElementById('yearSelect');
+            
+            if (monthSelect && yearSelect) {
+                monthSelect.value = currentMonth;
+                yearSelect.value = currentYear;
+                console.log('✓ Calendar month/year updated:', { currentMonth, currentYear });
+            } else {
+                console.error('✗ Month/Year select elements not found!');
+            }
+            
+            // Update the rental duration display
+            updateDurationField();
+            console.log('✓ Duration field updated');
+            
+            // Re-render calendar to show selected dates
+            renderCalendar();
+            console.log('✓ Calendar re-rendered with selected dates');
+            
+            console.log('=== EDIT DATA LOADED SUCCESSFULLY ===');
+        } catch (error) {
+            console.error('✗ Error loading date/time data:', error);
+        }
+    } else {
+        console.log('No start/end time in URL parameters');
+>>>>>>> Stashed changes
     }
 }
 
@@ -217,6 +391,13 @@ function renderCalendar() {
         
         const dateObj = new Date(currentYear, currentMonth, day);
         dateObj.setHours(0, 0, 0, 0);
+<<<<<<< Updated upstream
+=======
+        const month = String(currentMonth + 1).padStart(2, '0');
+const dayStr = String(day).padStart(2, '0');
+const dateKey = `${currentYear}-${month}-${dayStr}`;
+
+>>>>>>> Stashed changes
         
         const month = String(currentMonth + 1).padStart(2, '0');
         const dayStr = String(day).padStart(2, '0');
@@ -267,6 +448,7 @@ function renderCalendar() {
         }
         
         calendarDays.appendChild(dayButton);
+        dayButton.dataset.date = dateKey;
     }
 }
 
@@ -650,6 +832,7 @@ function confirmBooking() {
         return;
     }
     
+<<<<<<< Updated upstream
     const pickupLat = document.getElementById('pickup_lat')?.value || '';
     const pickupLng = document.getElementById('pickup_lng')?.value || '';
     const returnLat = document.getElementById('return_lat')?.value || '';
@@ -657,6 +840,23 @@ function confirmBooking() {
     const destLat = document.getElementById('destination_lat')?.value || '';
     const destLng = document.getElementById('destination_lng')?.value || '';
     
+=======
+    // Get coordinates from hidden fields
+    const pickupLat = document.getElementById('pickup_lat') ? document.getElementById('pickup_lat').value : '';
+    const pickupLng = document.getElementById('pickup_lng') ? document.getElementById('pickup_lng').value : '';
+    const returnLat = document.getElementById('return_lat') ? document.getElementById('return_lat').value : '';
+    const returnLng = document.getElementById('return_lng') ? document.getElementById('return_lng').value : '';
+    const destLat = document.getElementById('destination_lat') ? document.getElementById('destination_lat').value : '';
+    const destLng = document.getElementById('destination_lng') ? document.getElementById('destination_lng').value : '';
+    
+    console.log('Coordinates:', {
+        pickup: { lat: pickupLat, lng: pickupLng },
+        return: { lat: returnLat, lng: returnLng },
+        destination: { lat: destLat, lng: destLng }
+    });
+    
+    // Format datetime for Laravel (YYYY-MM-DD HH:mm:ss)
+>>>>>>> Stashed changes
     const startDateTime = formatDateTimeForLaravel(selectedStartDate, startTime);
     const endDateTime = formatDateTimeForLaravel(selectedEndDate, endTime);
     
@@ -670,6 +870,10 @@ function confirmBooking() {
         hours: totalHours
     };
     
+<<<<<<< Updated upstream
+=======
+    // Add coordinates if they exist
+>>>>>>> Stashed changes
     if (pickupLat && pickupLng) {
         bookingData.pickup_lat = pickupLat;
         bookingData.pickup_lng = pickupLng;
@@ -685,7 +889,11 @@ function confirmBooking() {
         bookingData.destination_lng = destLng;
     }
     
+<<<<<<< Updated upstream
     console.log('=== BOOKING DATA ===', bookingData);
+=======
+    console.log('=== FINAL BOOKING DATA ===', bookingData);
+>>>>>>> Stashed changes
     
     const params = new URLSearchParams(bookingData);
     window.location.href = `/booking/confirm?${params.toString()}`;
@@ -743,6 +951,7 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+<<<<<<< Updated upstream
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -755,3 +964,9 @@ document.addEventListener('DOMContentLoaded', function() {
         loadBookingDataFromURL();
     }, 150);
 });
+=======
+document.addEventListener('DOMContentLoaded', () => {
+    loadBookingDataFromURL();
+    initializeCalendar();
+});
+>>>>>>> Stashed changes
