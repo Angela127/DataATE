@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('=== CONFIRM PAGE LOADED ===');
     initializePaymentOptions();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     
     // Calculate surcharge after page loads
     setTimeout(() => {
@@ -13,12 +14,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }, 100);
 =======
+=======
+>>>>>>> Stashed changes
 
     const surcharge = calculateLocationSurcharge();
 
     if (surcharge > 0) {
         showNotification(`Additional location charge: RM${surcharge}`, 'info');
     }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 });
 
@@ -47,13 +53,19 @@ function goBack() {
 // Edit booking - go back to calendar with all parameters
 function editBooking() {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     const urlParams = new URLSearchParams(window.location.search);
     
 =======
+=======
+>>>>>>> Stashed changes
     // Get all the booking data from the current page
     const urlParams = new URLSearchParams(window.location.search);
     
     // Build the URL with all booking parameters
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     const params = new URLSearchParams({
         car: urlParams.get('car') || '',
@@ -77,6 +89,7 @@ function editBooking() {
         }
     }
     
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     console.log('Editing with params:', Object.fromEntries(params));
     window.location.href = '/booking/calendar?' + params.toString();
@@ -155,6 +168,14 @@ function calculateLocationSurcharge() {
 >>>>>>> Stashed changes
 }
 
+=======
+    console.log('Editing booking with params:', Object.fromEntries(params));
+    
+    // Navigate back to calendar with data
+    window.location.href = '/booking/calendar?' + params.toString();
+}
+
+>>>>>>> Stashed changes
 function calculateLocationSurcharge() {
     const urlParams = new URLSearchParams(window.location.search);
 

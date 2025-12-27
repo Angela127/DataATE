@@ -210,8 +210,11 @@
     </div>
 <script>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     // PICKUP_URL not needed anymore as form submits directly
 =======
+=======
+>>>>>>> Stashed changes
     const PICKUP_URL = "{{ route('booking.pickup') }}";
     
     // This function is now in booking_confirm.js
@@ -276,6 +279,9 @@ document.addEventListener('DOMContentLoaded', function () {
     applyLocationAddon();
 });
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 </script>
 

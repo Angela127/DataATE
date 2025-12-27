@@ -35,6 +35,9 @@ const bookingData = {
 // Load booking data from URL parameters (for edit functionality)
 =======
 // Initialize calendar on page load
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 function loadBookingDataFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -43,8 +46,14 @@ function loadBookingDataFromURL() {
     console.log('URL params:', Object.fromEntries(urlParams));
     
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     if (urlParams.toString() === '') {
         console.log('No URL parameters - fresh load');
+=======
+    // Check if there are any parameters
+    if (urlParams.toString() === '') {
+        console.log('No URL parameters found - this is a fresh load');
+>>>>>>> Stashed changes
 =======
     // Check if there are any parameters
     if (urlParams.toString() === '') {
@@ -61,6 +70,11 @@ function loadBookingDataFromURL() {
             carSelect.value = car;
             console.log('✓ Car loaded:', car);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+        } else {
+            console.error('✗ Car select element not found!');
+>>>>>>> Stashed changes
 =======
         } else {
             console.error('✗ Car select element not found!');
@@ -75,39 +89,52 @@ function loadBookingDataFromURL() {
     
     if (pickup) {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         const el = document.getElementById('pickupLocation');
         if (el) {
             el.value = pickup;
             console.log('✓ Pickup loaded:', pickup);
 =======
+=======
+>>>>>>> Stashed changes
         const pickupEl = document.getElementById('pickupLocation');
         if (pickupEl) {
             pickupEl.value = pickup;
             console.log('✓ Pickup location loaded:', pickup);
         } else {
             console.error('✗ Pickup location element not found!');
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         }
     }
     
     if (returnLoc) {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         const el = document.getElementById('returnLocation');
         if (el) {
             el.value = returnLoc;
             console.log('✓ Return loaded:', returnLoc);
 =======
+=======
+>>>>>>> Stashed changes
         const returnEl = document.getElementById('returnLocation');
         if (returnEl) {
             returnEl.value = returnLoc;
             console.log('✓ Return location loaded:', returnLoc);
         } else {
             console.error('✗ Return location element not found!');
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         }
     }
     
     if (destination) {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         const el = document.getElementById('destination');
         if (el) {
@@ -118,6 +145,8 @@ function loadBookingDataFromURL() {
     
     // Load coordinates
 =======
+=======
+>>>>>>> Stashed changes
         const destEl = document.getElementById('destination');
         if (destEl) {
             destEl.value = destination;
@@ -128,6 +157,9 @@ function loadBookingDataFromURL() {
     }
     
     // Load coordinates for locations
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     const pickupLat = urlParams.get('pickup_lat');
     const pickupLng = urlParams.get('pickup_lng');
@@ -138,6 +170,7 @@ function loadBookingDataFromURL() {
     
     if (pickupLat && pickupLng) {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         const lat = document.getElementById('pickup_lat');
         const lng = document.getElementById('pickup_lng');
         if (lat && lng) {
@@ -145,6 +178,8 @@ function loadBookingDataFromURL() {
             lng.value = pickupLng;
             console.log('✓ Pickup coords loaded');
 =======
+=======
+>>>>>>> Stashed changes
         const latEl = document.getElementById('pickup_lat');
         const lngEl = document.getElementById('pickup_lng');
         if (latEl && lngEl) {
@@ -153,11 +188,15 @@ function loadBookingDataFromURL() {
             console.log('✓ Pickup coordinates loaded:', pickupLat, pickupLng);
         } else {
             console.error('✗ Pickup coordinate elements not found!', { latEl, lngEl });
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         }
     }
     
     if (returnLat && returnLng) {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         const lat = document.getElementById('return_lat');
         const lng = document.getElementById('return_lng');
@@ -166,6 +205,8 @@ function loadBookingDataFromURL() {
             lng.value = returnLng;
             console.log('✓ Return coords loaded');
 =======
+=======
+>>>>>>> Stashed changes
         const latEl = document.getElementById('return_lat');
         const lngEl = document.getElementById('return_lng');
         if (latEl && lngEl) {
@@ -174,11 +215,15 @@ function loadBookingDataFromURL() {
             console.log('✓ Return coordinates loaded:', returnLat, returnLng);
         } else {
             console.error('✗ Return coordinate elements not found!', { latEl, lngEl });
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         }
     }
     
     if (destLat && destLng) {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         const lat = document.getElementById('destination_lat');
         const lng = document.getElementById('destination_lng');
@@ -191,6 +236,8 @@ function loadBookingDataFromURL() {
     
     // Load dates and times
 =======
+=======
+>>>>>>> Stashed changes
         const latEl = document.getElementById('destination_lat');
         const lngEl = document.getElementById('destination_lng');
         if (latEl && lngEl) {
@@ -203,11 +250,15 @@ function loadBookingDataFromURL() {
     }
     
     // Load start and end times
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     const startTimeStr = urlParams.get('start_time');
     const endTimeStr = urlParams.get('end_time');
     
     if (startTimeStr && endTimeStr) {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         try {
             const startDateTime = new Date(startTimeStr.replace(' ', 'T'));
@@ -224,6 +275,8 @@ function loadBookingDataFromURL() {
             
             // Convert start time
 =======
+=======
+>>>>>>> Stashed changes
         console.log('Loading times:', { start: startTimeStr, end: endTimeStr });
         
         try {
@@ -246,11 +299,15 @@ function loadBookingDataFromURL() {
             console.log('✓ Selected dates set:', { selectedStartDate, selectedEndDate });
             
             // Extract time components for start time
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             let startHour = startDateTime.getHours();
             const startMinute = startDateTime.getMinutes();
             const startPeriod = startHour >= 12 ? 'PM' : 'AM';
             
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
             if (startHour === 0) startHour = 12;
             else if (startHour > 12) startHour -= 12;
@@ -259,6 +316,8 @@ function loadBookingDataFromURL() {
             
             // Convert end time
 =======
+=======
+>>>>>>> Stashed changes
             // Convert to 12-hour format
             if (startHour === 0) {
                 startHour = 12;
@@ -275,11 +334,15 @@ function loadBookingDataFromURL() {
             console.log('✓ Start time set:', startTime);
             
             // Extract time components for end time
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             let endHour = endDateTime.getHours();
             const endMinute = endDateTime.getMinutes();
             const endPeriod = endHour >= 12 ? 'PM' : 'AM';
             
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
             if (endHour === 0) endHour = 12;
             else if (endHour > 12) endHour -= 12;
@@ -304,6 +367,8 @@ function loadBookingDataFromURL() {
             console.error('Error loading dates:', error);
         }
 =======
+=======
+>>>>>>> Stashed changes
             // Convert to 12-hour format
             if (endHour === 0) {
                 endHour = 12;
@@ -348,6 +413,9 @@ function loadBookingDataFromURL() {
         }
     } else {
         console.log('No start/end time in URL parameters');
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     }
 }
@@ -392,16 +460,22 @@ function renderCalendar() {
         const dateObj = new Date(currentYear, currentMonth, day);
         dateObj.setHours(0, 0, 0, 0);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
         const month = String(currentMonth + 1).padStart(2, '0');
 const dayStr = String(day).padStart(2, '0');
 const dateKey = `${currentYear}-${month}-${dayStr}`;
 
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
         
         const month = String(currentMonth + 1).padStart(2, '0');
         const dayStr = String(day).padStart(2, '0');
         const dateKey = `${currentYear}-${month}-${dayStr}`;
+=======
+>>>>>>> Stashed changes
         
         if (dateObj < today) {
             dayButton.classList.add('disabled');
@@ -833,6 +907,7 @@ function confirmBooking() {
     }
     
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     const pickupLat = document.getElementById('pickup_lat')?.value || '';
     const pickupLng = document.getElementById('pickup_lng')?.value || '';
     const returnLat = document.getElementById('return_lat')?.value || '';
@@ -841,6 +916,8 @@ function confirmBooking() {
     const destLng = document.getElementById('destination_lng')?.value || '';
     
 =======
+=======
+>>>>>>> Stashed changes
     // Get coordinates from hidden fields
     const pickupLat = document.getElementById('pickup_lat') ? document.getElementById('pickup_lat').value : '';
     const pickupLng = document.getElementById('pickup_lng') ? document.getElementById('pickup_lng').value : '';
@@ -871,6 +948,10 @@ function confirmBooking() {
     };
     
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+    // Add coordinates if they exist
+>>>>>>> Stashed changes
 =======
     // Add coordinates if they exist
 >>>>>>> Stashed changes
@@ -890,8 +971,11 @@ function confirmBooking() {
     }
     
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     console.log('=== BOOKING DATA ===', bookingData);
 =======
+=======
+>>>>>>> Stashed changes
     console.log('=== FINAL BOOKING DATA ===', bookingData);
 >>>>>>> Stashed changes
     
@@ -952,6 +1036,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -964,6 +1049,12 @@ document.addEventListener('DOMContentLoaded', function() {
         loadBookingDataFromURL();
     }, 150);
 });
+=======
+document.addEventListener('DOMContentLoaded', () => {
+    loadBookingDataFromURL();
+    initializeCalendar();
+});
+>>>>>>> Stashed changes
 =======
 document.addEventListener('DOMContentLoaded', () => {
     loadBookingDataFromURL();
