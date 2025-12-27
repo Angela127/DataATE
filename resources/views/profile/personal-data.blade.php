@@ -141,13 +141,23 @@
                     <div class="field-card">
                         <div class="field-info">
                             <span class="field-label">Gender</span>
+
+                             @php
+                                $gender = old('gender', $customer->gender ?? '');
+                            @endphp
+
                             <select name="gender" class="field-input field-select">
                             <option value="" disabled {{ empty($gender) ? 'selected' : '' }}>
                                 Select Gender
                             </option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Prefer not to say">Prefer not to say</option>
+                            <option value="Male"
+                            {{ $gender === 'Male' ? 'selected' : '' }}>
+                            Male
+                            </option>
+                            <option value="Female"
+                            {{ $gender === 'Female' ? 'selected' : '' }}>Female</option>
+                            <option value="Prefer not to say"
+                            {{ $gender === 'Prefer not to say' ? 'selected' : '' }}>Prefer not to say</option>
                         </select>
 
                         </div>
